@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harrys Portfolio</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    function Gauge({ skill, percentage }) {
+      const [currentPercentage, setCurrentPercentage] = React.useState(0);
+      const gaugeRef = React.useRef(null);
+
+      React.useEffect(() => {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              let start = 0;
+              const duration = 2000; // 2 seconds
+              const increment = percentage / (duration / 50); // Update every 50ms
+              const animate = () => {
+                start += increment;
+                if (start >= percentage) {
+                  setCurrentPercentage(percentage);
+                  clearInterval(timer);
+                } else {
+                  setCurrentPercentage(Math.min(Math.floor(start), percentage));
+                }
+              };
+              const timer = setInterval(animate, 50);
+              observer.disconnect(); // Animate only once
+            }
+          },
+          { threshold: 0.1 }
+        );
+
+        if (gaugeRef.current) {
+          observer.observe(gaugeRef.current);
+        }
+
+        return () => observer.disconnect();
+      }, [percentage]);
+
+      return (
+        <div ref={gaugeRef} className="relative flex flex-col items-center p-4 bg-gray-800 rounded-lg hover:scale-105 transition duration-300">
+          <svg className="w-24 h-24" viewBox="0 0 100 100">
+            <circle
+              className="text-gray-600"
+              strokeWidth="10"
+              stroke="currentColor"
+              fill="transparent"
+              r="40"
+              cx="50"
+              cy="50"
+            />
+            <circle
+              className="text-green-500"
+              strokeWidth="10"
+              strokeDasharray={`${currentPercentage * 2.51}, 251.2`}
+              strokeDashoffset="0"
+              strokeLinecap="round"
+              stroke="currentColor"
+              fill="transparent"
+              r="40"
+              cx="50"
+              cy="50"
+              transform="rotate(-90 50 50)"
+              style={{ transition: 'stroke-dasharray 0.05s linear' }}
+            />
+            <text
+              x="50"
+              y="50"
+              textAnchor="middle"
+              dy=".3em"
+              className="text-xl font-bold text-white"
+            >
+              {currentPercentage}%
+            </text>
+          </svg>
+          <h3 className="mt-2 text-lg font-bold text-white">{skill}</h3>
+        </div>
+      );
+    }
+
+    function TimelineNode({ company, role, duration, responsibilities }) {
+      return (
+        <div className="relative pl-8 sm:pl-32 py-6 group">
+          <div className="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+          <div className="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+          <div className="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition">
+            <h3 className="text-xl font-bold text-green-400">{role}</h3>
+            <p className="text-lg text-white">{company}</p>
+            <p className="text-sm text-gray-400">{duration}</p>
+            <ul className="mt-2 text-gray-300 list-disc list-inside">
+              {responsibilities.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      );
+    }
+
+    function WorkflowSimulator() {
+      const [pipelineStatus, setPipelineStatus] = React.useState("idle");
+      const [pipelineMode, setPipelineMode] = React.useState("simple");
+      const [logs, setLogs] = React.useState([]);
+      const [progress, setProgress] = React.useState({});
+
+      const simpleStages = [
+        { id: "code", name: "Code", duration: 1000, desc: "Pushing code to Git repository" },
+        { id: "build", name: "Build", duration: 1500, desc: "Compiling Docker images" },
+        { id: "test", name: "Test", duration: 1200, desc: "Running unit tests" },
+        { id: "deploy", name: "Deploy", duration: 1000, desc: "Deploying to production" }
+      ];
+
+      const complexStages = [
+        { id: "code", name: "Code", duration: 1000, desc: "Pushing code to Git repository" },
+        { id: "lint", name: "Lint", duration: 800, desc: "Running ESLint checks" },
+        { id: "build", name: "Build", duration: 1500, desc: "Compiling Docker images" },
+        { id: "test", name: "Test", duration: 1200, desc: "Running unit and integration tests" },
+        { id: "scan", name: "Scan", duration: 1000, desc: "Performing security scans" },
+        { id: "deploy", name: "Deploy", duration: 1000, desc: "Deploying to production" }
+      ];
+
+      const stages = pipelineMode === "simple" ? simpleStages : complexStages;
+
+      const runPipeline = () => {
+        setPipelineStatus("running");
+        setLogs([]);
+        setProgress({});
+
+        const runStage = (index) => {
+          if (index >= stages.length) {
+            setPipelineStatus("idle");
+            return;
+          }
+
+          const stage = stages[index];
+          setProgress(prev => ({ ...prev, [stage.id]: 0 }));
+          const interval = setInterval(() => {
+            setProgress(prev => {
+              const newProgress = Math.min((prev[stage.id] || 0) + 10, 100);
+              if (newProgress === 100) {
+                clearInterval(interval);
+                const status = Math.random() > 0.2 ? "Success" : "Failed";
+                setLogs(prevLogs => [
+                  ...prevLogs,
+                  `${new Date().toLocaleTimeString()}: ${stage.name}: ${status} - ${stage.desc}`
+                ]);
+                if (status === "Failed") {
+                  setPipelineStatus("idle");
+                  return prev;
+                }
+                runStage(index + 1);
+              }
+              return { ...prev, [stage.id]: newProgress };
+            });
+          }, stage.duration / 10);
+        };
+
+        runStage(0);
+      };
+
+      return (
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex justify-between mb-4">
+            <button
+              onClick={runPipeline}
+              disabled={pipelineStatus === "running"}
+              className={`px-4 py-2 rounded ${
+                pipelineStatus === "running"
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-green-500 text-black hover:bg-green-400"
+              } transition`}
+            >
+              Run Pipeline
+            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setPipelineMode("simple")}
+                className={`px-4 py-2 rounded ${
+                  pipelineMode === "simple" ? "bg-green-500 text-black" : "bg-gray-600"
+                } hover:bg-green-400 transition`}
+              >
+                Simple Mode
+              </button>
+              <button
+                onClick={() => setPipelineMode("complex")}
+                className={`px-4 py-2 rounded ${
+                  pipelineMode === "complex" ? "bg-green-500 text-black" : "bg-gray-600"
+                } hover:bg-green-400 transition`}
+              >
+                Complex Mode
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            {stages.map((stage, index) => (
+              <div key={stage.id} className="flex flex-col items-center">
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold relative ${
+                    progress[stage.id] === 100
+                      ? logs.some(log => log.includes(`${stage.name}: Success`))
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                      : "bg-gray-600"
+                  } transition-colors duration-500`}
+                >
+                  {stage.name}
+                  {progress[stage.id] > 0 && progress[stage.id] < 100 && (
+                    <div className="absolute text-xs text-white -bottom-6">{progress[stage.id]}%</div>
+                  )}
+                </div>
+                {index < stages.length - 1 && (
+                  <div className="h-2 w-24 bg-gray-600 mt-2">
+                    <div
+                      className={`h-full bg-green-500 transition-all duration-${stage.duration}`}
+                      style={{
+                        width: progress[stage.id] ? `${progress[stage.id]}%` : "0%"
+                      }}
+                    ></div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 p-4 bg-gray-900 rounded h-32 overflow-y-auto">
+            {logs.length === 0 ? (
+              <p className="text-gray-400">No pipeline logs yet. Click "Run Pipeline" to start.</p>
+            ) : (
+              logs.map((log, index) => (
+                <p key={index} className="text-sm text-gray-300">{log}</p>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [deployed, setDeployed] = React.useState(false);
+
+      React.useEffect(() => {
+        tsParticles.load("particles-js", {
+          particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#00ff00" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5 },
+            size: { value: 3, random: true },
+            move: { enable: true, speed: 2, direction: "none", random: true }
+          },
+          interactivity: {
+            events: {
+              onhover: { enable: true, mode: "repulse" },
+              onclick: { enable: true, mode: "push" }
+            }
+          }
+        });
+      }, []);
+
+      const handleDeploy = () => {
+        setDeployed(true);
+        setTimeout(() => setDeployed(false), 3000);
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-900 text-white font-mono relative">
+          <div id="particles-js" className="absolute inset-0 z-0"></div>
+          <div className="relative z-10 container mx-auto p-4">
+            {/* Hero Section */}
+            <header className="text-center py-12">
+              <h1 className="text-5xl font-bold hologram">
+                <span className="text-green-400">> </span>Harikumar Peddakotla
+              </h1>
+              <p className="text-2xl mt-2 text-gray-300">
+                <span className="inline-block animate-type hologram">DevOps Engineer | Automation Enthusiast</span>
+              </p>
+              <button
+                onClick={handleDeploy}
+                className="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition"
+              >
+                Deploy Now
+              </button>
+              {deployed && (
+                <p className="mt-4 text-green-400 animate-pulse">
+                  Deployment Successful! Pipeline running at 100% 🚀
+                </p>
+              )}
+            </header>
+
+            {/* Skills Section - Metric Dashboard */}
+            <section className="my-12">
+              <h2 className="text-3xl font-bold text-center mb-6">> Skills Dashboard</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+                {[
+                  { skill: "Docker", percentage: 90 },
+                  { skill: "Kubernetes", percentage: 85 },
+                  { skill: "AWS", percentage: 80 },
+                  { skill: "Jenkins", percentage: 75 },
+                  { skill: "Terraform", percentage: 70 },
+                    { skill: "Python", percentage: 80 },
+                    { skill: "Bash Scripting", percentage: 90 },
+                    { skill: "CI/CD", percentage: 95 },
+                    { skill: "Monitoring", percentage: 85 },
+                  { skill: "Git", percentage: 95 }
+                ].map((item) => (
+                  <Gauge key={item.skill} skill={item.skill} percentage={item.percentage} />
+                ))}
+              </div>
+            </section>
+
+            {/* Experience and Jobs Timeline Section */}
+            <section className="my-12">
+              <h2 className="text-3xl font-bold text-center mb-6">> Experience Timeline</h2>
+              <div className="relative">
+                {[
+                  {
+                    company: "CSG",
+                    role: "DevOps Engineer - 2",
+                    duration: "April 2023 - Present",
+                    responsibilities: [
+                      "Designed and implemented CI/CD pipelines using Rundeck and Chef",
+                      "Managed Kubernetes clusters on AWS EKS for high-availability applications.",
+                      "Migrated Legacy build systems to modern enterprise solutions.",
+                      "Fluentbit integration for real-time log monitoring and alerting."
+                    ]
+                  },
+                  {
+                    company: "Rakuten",
+                    role: "DevOps Engineer",
+                    duration: "April 2022 - March 2023",
+                    responsibilities: [
+                      "Deployed and monitored microservices on Docker Swarm.",
+                      "Optimized AWS resource usage, reducing costs by 20%.",
+                      "Integrated monitoring tools like Prometheus and Grafana."
+                    ]
+                  },
+                  {
+                    company: "Tata Consultancy Services",
+                    role: "Assistant Systems Engineer",
+                    duration: "May 2021 - Feb 2022",
+                    responsibilities: [
+                      "Working with Production support team in solving issues in production environment.",
+                      "Maintained Git repositories and automated build processes.",
+                      "Assisted in migrating on-premises infrastructure to AWS.",
+                      "Scripted automation tasks using Bash and Python."
+                    ]
+                  }
+                ].map((job, index) => (
+                  <TimelineNode
+                    key={index}
+                    company={job.company}
+                    role={job.role}
+                    duration={job.duration}
+                    responsibilities={job.responsibilities}
+                  />
+                ))}
+              </div>
+            </section>
+
+            {/* Workflow Simulator Section */}
+            <section className="my-12">
+              <h2 className="text-3xl font-bold text-center mb-6">> Workflow Simulator</h2>
+              <WorkflowSimulator />
+            </section>
+
+            {/* Projects Section */}
+            <section className="my-12">
+              <h2 className="text-3xl font-bold text-center mb-6">> Projects</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "CI/CD Pipeline with Jenkins",
+                    desc: "Automated build and deployment pipeline for a microservices architecture using Jenkins and Docker.",
+                    link: "#"
+                  },
+                  {
+                    title: "Kubernetes Cluster Setup",
+                    desc: "Deployed a highly available Kubernetes cluster on AWS with auto-scaling and monitoring.",
+                    link: "#"
+                  },
+                  {
+                    title: "Infrastructure as Code",
+                    desc: "Provisioned cloud infrastructure using Terraform for a scalable web application.",
+                    link: "#"
+                  }
+                ].map((project) => (
+                  <div
+                    key={project.title}
+                    className="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition"
+                  >
+                    <h3 className="text-xl font-bold">{project.title}</h3>
+                    <p className="mt-2 text-gray-300">{project.desc}</p>
+                    <a
+                      href={project.link}
+                      className="mt-4 inline-block text-green-400 hover:underline"
+                    >
+                      View Project
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="text-center py-6">
+              <p className="text-gray-400">
+                © 2025 Harry | Built with ❤️
+              </p>
+            </footer>
+          </div>
+
+          {/* Custom CSS for Typing Animation and Holographic Effect */}
+          <style jsx>{`
+            @keyframes type {
+              from { width: 0; }
+              to { width: 100%; }
+            }
+            .animate-type {
+              display: inline-block;
+              overflow: hidden;
+              white-space: nowrap;
+              animation: type 6s steps(40, end) infinite;
+            }
+            .hologram {
+              position: relative;
+              color: #00ff00;
+              text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);
+              animation: flicker 4s infinite;
+            }
+            .hologram::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              height: 2px;
+              background: rgba(0, 255, 0, 0.3);
+              animation: scanline 3s linear infinite;
+            }
+            @keyframes flicker {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.95; }
+              75% { opacity: 0.98; }
+            }
+            @keyframes scanline {
+              0% { top: 0; }
+              100% { top: 100%; }
+            }
+          `}</style>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
+</body>
+</html>

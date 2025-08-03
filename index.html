@@ -59,11 +59,13 @@
         // Insert the portfolio HTML content after video
         root.innerHTML = `
         <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
+          <!-- Top-left round icon -->
+          <img src="assets/image.png" alt="Profile Icon" class="fixed top-4 left-4 w-14 h-14 rounded-full shadow-lg border-2 border-green-400 bg-gray-800 object-cover z-50" style="background:#222;" loading="lazy" />
           <div id="particles-js" class="absolute inset-0 z-0"></div>
           <div class="relative z-10 w-full px-2 sm:px-4 py-4">
             <header class="text-center py-8">
               <h1 class="text-4xl sm:text-5xl font-bold hologram">
-                <span class="text-green-400">&gt; </span>Harikumar Peddakotla
+                <span class="text-green-400">&gt; </span><span id="name-transition">ハリクマール・ペダコトラ</span>
               </h1>
               <p class="text-xl sm:text-2xl mt-2 text-gray-300 break-words max-w-full whitespace-normal">
                 <span class="block animate-type hologram w-full text-center">
@@ -92,9 +94,24 @@
             <section class="my-8">
               <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Experience Timeline</h2>
               <div class="relative">
-                <div class="relative pl-8 sm:pl-32 py-6 group"><div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div><div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div><div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer - 2</h3><p class="text-lg text-white">CSG</p><p class="text-sm text-gray-400">April 2023 - Present</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li><li>Managed Kubernetes clusters on AWS EKS for high-availability applications.</li><li>Migrated Legacy build systems to modern enterprise solutions.</li><li>Fluentbit integration for real-time log monitoring and alerting.</li></ul></div></div>
-                <div class="relative pl-8 sm:pl-32 py-6 group"><div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div><div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div><div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer</h3><p class="text-lg text-white">Rakuten</p><p class="text-sm text-gray-400">April 2022 - March 2023</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Deployed and monitored microservices on Docker Swarm.</li><li>Optimized AWS resource usage, reducing costs by 20%.</li><li>Integrated monitoring tools like Prometheus and Grafana.</li></ul></div></div>
-                <div class="relative pl-8 sm:pl-32 py-6 group"><div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div><div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div><div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div></div>
+                <div class="relative pl-8 sm:pl-32 py-6 group">
+                  <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+                  <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer - 2</h3><p class="text-lg text-white">CSG</p><p class="text-sm text-gray-400">April 2023 - Present</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li><li>Managed Kubernetes clusters on AWS EKS for high-availability applications.</li><li>Migrated Legacy build systems to modern enterprise solutions.</li><li>Fluentbit integration for real-time log monitoring and alerting.</li></ul></div>
+                </div>
+                <div class="relative pl-8 sm:pl-32 py-6 group">
+                  <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+                  <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer</h3><p class="text-lg text-white">Rakuten</p><p class="text-sm text-gray-400">April 2022 - March 2023</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Deployed and monitored microservices on Docker Swarm.</li><li>Optimized AWS resource usage, reducing costs by 20%.</li><li>Integrated monitoring tools like Prometheus and Grafana.</li></ul></div>
+                </div>
+                <div class="relative pl-8 sm:pl-32 py-6 group">
+                  <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+                  <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div>
+                </div>
               </div>
             </section>
             <section class="my-8">
@@ -106,7 +123,7 @@
               </div>
             </section>
             <footer class="text-center py-6">
-              <p class="text-gray-400">© 2025 Harry | Built with ❤️</p>
+              <p class="text-gray-400">© 2025 ハリー | Built with ❤️</p>
             </footer>
           </div>
           <style>
@@ -125,9 +142,65 @@
             if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
           }
         <\/script>
+
         `;
+        // Name transition effect (run after DOM is updated)
+        setTimeout(function() {
+          var nameSpan = document.getElementById('name-transition');
+          if (nameSpan) {
+            var jp = 'ハリクマール・ペダコトラ';
+            var en = 'Harikumar Peddakotla';
+            var maxLen = Math.max(jp.length, en.length);
+            nameSpan.style.transition = 'opacity 0.3s';
+            nameSpan.style.opacity = 0;
+            setTimeout(function() {
+              nameSpan.style.opacity = 1;
+              // Create spans for each character
+              nameSpan.innerHTML = '';
+              for (var k = 0; k < maxLen; k++) {
+                var span = document.createElement('span');
+                // If the English char is a space, use a non-breaking space for correct spacing
+                if (en[k] === ' ') {
+                  span.textContent = jp[k] ? jp[k] : '\u00A0';
+                } else {
+                  span.textContent = jp[k] ? jp[k] : '';
+                }
+                span.style.display = 'inline-block';
+                span.style.transition = 'opacity 0.3s, transform 0.3s';
+                span.style.fontFamily = 'inherit';
+                nameSpan.appendChild(span);
+              }
+              var i = 0;
+              var interval = setInterval(function() {
+                var spans = nameSpan.children;
+                if (i < maxLen) {
+                  var s = spans[i];
+                  if (s) {
+                    s.style.opacity = 0;
+                    s.style.transform = 'scale(1.5)';
+                    setTimeout(function(span, idx) {
+                      return function() {
+                        // If the English char is a space, use a non-breaking space
+                        if (en[idx] === ' ') {
+                          span.textContent = '\u00A0';
+                        } else {
+                          span.textContent = en[idx] ? en[idx] : '';
+                        }
+                        span.style.opacity = 1;
+                        span.style.transform = 'scale(1)';
+                      }
+                    }(s, i), 200);
+                  }
+                }
+                i++;
+                if (i > maxLen) clearInterval(interval);
+              }, 100); // speed per letter
+            }, 300);
+          }
+        }, 800); // delay after content appears
       }, 10000);
     });
+
 
     // Gauge rendering
     function createGauge(skill, percentage) {

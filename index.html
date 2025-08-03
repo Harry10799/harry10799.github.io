@@ -53,6 +53,29 @@
     document.addEventListener('DOMContentLoaded', function() {
       var loadingScreen = document.getElementById('loading-screen');
       var root = document.getElementById('root');
+      // Make showDeployMsg globally available
+      window.showDeployMsg = function() {
+        var msg = document.getElementById('deploy-msg');
+        var btn = document.getElementById('deploy-btn');
+        if (btn) {
+          var orig = btn.getAttribute('data-orig') || btn.innerHTML;
+          btn.setAttribute('data-orig', orig);
+          btn.innerHTML = '<span>Deployed</span> <img src="assets/katana-2.png" alt="Katana Highlight" class="inline-block w-7 h-5 ml-2 align-middle" style="transform: rotate(-20deg);" />';
+          btn.style.display = 'inline-flex';
+          btn.style.justifyContent = 'center';
+          btn.style.alignItems = 'center';
+          setTimeout(function() {
+            btn.innerHTML = orig;
+            btn.style.display = '';
+            btn.style.justifyContent = '';
+            btn.style.alignItems = '';
+            // Re-attach click handler after innerHTML reset
+            btn.onclick = window.showDeployMsg;
+          }, 1800);
+        }
+        if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
+      };
+
       setTimeout(function() {
         if (loadingScreen) loadingScreen.remove();
         if (root) root.style.display = 'block';
@@ -63,7 +86,7 @@
           <img src="assets/image.png" alt="Profile Icon" class="fixed top-4 left-4 w-14 h-14 rounded-full shadow-lg border-2 border-green-400 bg-gray-800 object-cover z-50" style="background:#222;" loading="lazy" />
           <div id="particles-js" class="absolute inset-0 z-0"></div>
           <div class="relative z-10 w-full px-2 sm:px-4 py-4">
-            <header class="text-center py-8">
+            <header class="text-center py-8 flex flex-col items-center">
               <h1 class="text-4xl sm:text-5xl font-bold hologram">
                 <span class="text-green-400">&gt; </span><span id="name-transition">ハリクマール・ペダコトラ</span>
               </h1>
@@ -73,8 +96,8 @@
                   <span class="hidden sm:inline"> | Automation Enthusiast</span>
                 </span>
               </p>
-              <button class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition" onclick="showDeployMsg()">Deploy Now</button>
-              <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;">Deployment Successful! Pipeline running at 100% 🚀</p>
+              <button id="deploy-btn" class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition flex items-center justify-center gap-2">Deploy Now</button>
+              <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;"></p>
             </header>
             <section class="my-8">
               <div class="flex justify-center items-center mb-2">
@@ -188,11 +211,30 @@
         <script>
           function showDeployMsg() {
             var msg = document.getElementById('deploy-msg');
+            var btn = document.getElementById('deploy-btn');
+            if (btn) {
+              var orig = btn.getAttribute('data-orig') || btn.innerHTML;
+              btn.setAttribute('data-orig', orig);
+              btn.innerHTML = '<span>Deploy</span> <img src="assets/katana-2.png" alt="Katana Highlight" class="inline-block w-7 h-5 ml-2 align-middle" style="transform: rotate(-20deg);" />';
+              btn.style.display = 'inline-flex';
+              btn.style.justifyContent = 'center';
+              btn.style.alignItems = 'center';
+              setTimeout(function() {
+                btn.innerHTML = orig;
+                btn.style.display = '';
+                btn.style.justifyContent = '';
+                btn.style.alignItems = '';
+                // Re-attach click handler after innerHTML reset
+                btn.onclick = showDeployMsg;
+              }, 1800);
+            }
             if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
           }
-        <\/script>
 
         `;
+        // Attach click handler after DOM update (must be outside the template string)
+        var deployBtn = document.getElementById('deploy-btn');
+        if (deployBtn) deployBtn.onclick = window.showDeployMsg;
         // Name transition effect (run after DOM is updated)
         setTimeout(function() {
           var nameSpan = document.getElementById('name-transition');

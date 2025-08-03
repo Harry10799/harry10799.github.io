@@ -4,463 +4,265 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Harrys Portfolio</title>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s ease-out;
+    }
+    #loading-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #loading-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #root {
+      display: none;
+    }
+    #root.visible {
+      display: block;
+    }
+  </style>
 </head>
 <body>
+  <div id="loading-screen">
+    <video id="loading-video" autoplay muted>
+      <source src="assets/loading.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
   <div id="root"></div>
-  <script type="text/babel">
-    function Gauge({ skill, percentage }) {
-      const [currentPercentage, setCurrentPercentage] = React.useState(0);
-      const gaugeRef = React.useRef(null);
-
-      React.useEffect(() => {
-        const observer = new IntersectionObserver(
-          ([entry]) => {
-            if (entry.isIntersecting) {
-              let start = 0;
-              const duration = 2000; // 2 seconds
-              const increment = percentage / (duration / 50); // Update every 50ms
-              const animate = () => {
-                start += increment;
-                if (start >= percentage) {
-                  setCurrentPercentage(percentage);
-                  clearInterval(timer);
-                } else {
-                  setCurrentPercentage(Math.min(Math.floor(start), percentage));
-                }
-              };
-              const timer = setInterval(animate, 50);
-              observer.disconnect(); // Animate only once
-            }
-          },
-          { threshold: 0.1 }
-        );
-
-        if (gaugeRef.current) {
-          observer.observe(gaugeRef.current);
-        }
-
-        return () => observer.disconnect();
-      }, [percentage]);
-
-      return (
-        <div ref={gaugeRef} className="relative flex flex-col items-center p-4 bg-gray-800 rounded-lg hover:scale-105 transition duration-300">
-          <svg className="w-24 h-24" viewBox="0 0 100 100">
-            <circle
-              className="text-gray-600"
-              strokeWidth="10"
-              stroke="currentColor"
-              fill="transparent"
-              r="40"
-              cx="50"
-              cy="50"
-            />
-            <circle
-              className="text-green-500"
-              strokeWidth="10"
-              strokeDasharray={`${currentPercentage * 2.51}, 251.2`}
-              strokeDashoffset="0"
-              strokeLinecap="round"
-              stroke="currentColor"
-              fill="transparent"
-              r="40"
-              cx="50"
-              cy="50"
-              transform="rotate(-90 50 50)"
-              style={{ transition: 'stroke-dasharray 0.05s linear' }}
-            />
-            <text
-              x="50"
-              y="50"
-              textAnchor="middle"
-              dy=".3em"
-              className="text-xl font-bold text-white"
-            >
-              {currentPercentage}%
-            </text>
-          </svg>
-          <h3 className="mt-2 text-lg font-bold text-white">{skill}</h3>
-        </div>
-      );
-    }
-
-    function TimelineNode({ company, role, duration, responsibilities }) {
-      return (
-        <div className="relative pl-8 sm:pl-32 py-6 group">
-          <div className="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-          <div className="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-          <div className="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition">
-            <h3 className="text-xl font-bold text-green-400">{role}</h3>
-            <p className="text-lg text-white">{company}</p>
-            <p className="text-sm text-gray-400">{duration}</p>
-            <ul className="mt-2 text-gray-300 list-disc list-inside">
-              {responsibilities.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      );
-    }
-
-    function WorkflowSimulator() {
-      const [pipelineStatus, setPipelineStatus] = React.useState("idle");
-      const [pipelineMode, setPipelineMode] = React.useState("simple");
-      const [logs, setLogs] = React.useState([]);
-      const [progress, setProgress] = React.useState({});
-
-      const simpleStages = [
-        { id: "code", name: "Code", duration: 1000, desc: "Pushing code to Git repository" },
-        { id: "build", name: "Build", duration: 1500, desc: "Compiling Docker images" },
-        { id: "test", name: "Test", duration: 1200, desc: "Running unit tests" },
-        { id: "deploy", name: "Deploy", duration: 1000, desc: "Deploying to production" }
-      ];
-
-      const complexStages = [
-        { id: "code", name: "Code", duration: 1000, desc: "Pushing code to Git repository" },
-        { id: "lint", name: "Lint", duration: 800, desc: "Running ESLint checks" },
-        { id: "build", name: "Build", duration: 1500, desc: "Compiling Docker images" },
-        { id: "test", name: "Test", duration: 1200, desc: "Running unit and integration tests" },
-        { id: "scan", name: "Scan", duration: 1000, desc: "Performing security scans" },
-        { id: "deploy", name: "Deploy", duration: 1000, desc: "Deploying to production" }
-      ];
-
-      const stages = pipelineMode === "simple" ? simpleStages : complexStages;
-
-      const runPipeline = () => {
-        setPipelineStatus("running");
-        setLogs([]);
-        setProgress({});
-
-        const runStage = (index) => {
-          if (index >= stages.length) {
-            setPipelineStatus("idle");
-            return;
-          }
-
-          const stage = stages[index];
-          setProgress(prev => ({ ...prev, [stage.id]: 0 }));
-          const interval = setInterval(() => {
-            setProgress(prev => {
-              const newProgress = Math.min((prev[stage.id] || 0) + 10, 100);
-              if (newProgress === 100) {
-                clearInterval(interval);
-                const status = Math.random() > 0.2 ? "Success" : "Failed";
-                setLogs(prevLogs => [
-                  ...prevLogs,
-                  `${new Date().toLocaleTimeString()}: ${stage.name}: ${status} - ${stage.desc}`
-                ]);
-                if (status === "Failed") {
-                  setPipelineStatus("idle");
-                  return prev;
-                }
-                runStage(index + 1);
-              }
-              return { ...prev, [stage.id]: newProgress };
-            });
-          }, stage.duration / 10);
-        };
-
-        runStage(0);
-      };
-
-      return (
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <div className="flex justify-between mb-4">
-            <button
-              onClick={runPipeline}
-              disabled={pipelineStatus === "running"}
-              className={`px-4 py-2 rounded ${
-                pipelineStatus === "running"
-                  ? "bg-gray-600 cursor-not-allowed"
-                  : "bg-green-500 text-black hover:bg-green-400"
-              } transition`}
-            >
-              Run Pipeline
-            </button>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setPipelineMode("simple")}
-                className={`px-4 py-2 rounded ${
-                  pipelineMode === "simple" ? "bg-green-500 text-black" : "bg-gray-600"
-                } hover:bg-green-400 transition`}
-              >
-                Simple Mode
-              </button>
-              <button
-                onClick={() => setPipelineMode("complex")}
-                className={`px-4 py-2 rounded ${
-                  pipelineMode === "complex" ? "bg-green-500 text-black" : "bg-gray-600"
-                } hover:bg-green-400 transition`}
-              >
-                Complex Mode
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            {stages.map((stage, index) => (
-              <div key={stage.id} className="flex flex-col items-center">
-                <div
-                  className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold relative ${
-                    progress[stage.id] === 100
-                      ? logs.some(log => log.includes(`${stage.name}: Success`))
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                      : "bg-gray-600"
-                  } transition-colors duration-500`}
-                >
-                  {stage.name}
-                  {progress[stage.id] > 0 && progress[stage.id] < 100 && (
-                    <div className="absolute text-xs text-white -bottom-6">{progress[stage.id]}%</div>
-                  )}
-                </div>
-                {index < stages.length - 1 && (
-                  <div className="h-2 w-24 bg-gray-600 mt-2">
-                    <div
-                      className={`h-full bg-green-500 transition-all duration-${stage.duration}`}
-                      style={{
-                        width: progress[stage.id] ? `${progress[stage.id]}%` : "0%"
-                      }}
-                    ></div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 p-4 bg-gray-900 rounded h-32 overflow-y-auto">
-            {logs.length === 0 ? (
-              <p className="text-gray-400">No pipeline logs yet. Click "Run Pipeline" to start.</p>
-            ) : (
-              logs.map((log, index) => (
-                <p key={index} className="text-sm text-gray-300">{log}</p>
-              ))
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    function App() {
-      const [deployed, setDeployed] = React.useState(false);
-
-      React.useEffect(() => {
-        tsParticles.load("particles-js", {
-          particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
-            color: { value: "#00ff00" },
-            shape: { type: "circle" },
-            opacity: { value: 0.5 },
-            size: { value: 3, random: true },
-            move: { enable: true, speed: 2, direction: "none", random: true }
-          },
-          interactivity: {
-            events: {
-              onhover: { enable: true, mode: "repulse" },
-              onclick: { enable: true, mode: "push" }
-            }
-          }
-        });
-      }, []);
-
-      const handleDeploy = () => {
-        setDeployed(true);
-        setTimeout(() => setDeployed(false), 3000);
-      };
-
-      return (
-        <div className="min-h-screen bg-gray-900 text-white font-mono relative">
-          <div id="particles-js" className="absolute inset-0 z-0"></div>
-          <div className="relative z-10 container mx-auto p-4">
-            {/* Hero Section */}
-            <header className="text-center py-12">
-              <h1 className="text-5xl font-bold hologram">
-                <span className="text-green-400">> </span>Harikumar Peddakotla
+  <script>
+    // Loader logic
+    document.addEventListener('DOMContentLoaded', function() {
+      var loadingScreen = document.getElementById('loading-screen');
+      var root = document.getElementById('root');
+      setTimeout(function() {
+        if (loadingScreen) loadingScreen.remove();
+        if (root) root.style.display = 'block';
+        // Insert the portfolio HTML content after video
+        root.innerHTML = `
+        <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
+          <div id="particles-js" class="absolute inset-0 z-0"></div>
+          <div class="relative z-10 w-full px-2 sm:px-4 py-4">
+            <header class="text-center py-8">
+              <h1 class="text-4xl sm:text-5xl font-bold hologram">
+                <span class="text-green-400">&gt; </span>Harikumar Peddakotla
               </h1>
-              <p className="text-2xl mt-2 text-gray-300">
-                <span className="inline-block animate-type hologram">DevOps Engineer | Automation Enthusiast</span>
+              <p class="text-xl sm:text-2xl mt-2 text-gray-300 break-words max-w-full whitespace-normal">
+                <span class="block animate-type hologram w-full text-center">
+                  DevOps Engineer
+                  <span class="hidden sm:inline"> | Automation Enthusiast</span>
+                </span>
               </p>
-              <button
-                onClick={handleDeploy}
-                className="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition"
-              >
-                Deploy Now
-              </button>
-              {deployed && (
-                <p className="mt-4 text-green-400 animate-pulse">
-                  Deployment Successful! Pipeline running at 100% 🚀
-                </p>
-              )}
+              <button class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition" onclick="showDeployMsg()">Deploy Now</button>
+              <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;">Deployment Successful! Pipeline running at 100% 🚀</p>
             </header>
-
-            {/* Skills Section - Metric Dashboard */}
-            <section className="my-12">
-              <h2 className="text-3xl font-bold text-center mb-6">> Skills Dashboard</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-                {[
-                  { skill: "Docker", percentage: 90 },
-                  { skill: "Kubernetes", percentage: 85 },
-                  { skill: "AWS", percentage: 80 },
-                  { skill: "Jenkins", percentage: 75 },
-                  { skill: "Terraform", percentage: 70 },
-                    { skill: "Python", percentage: 80 },
-                    { skill: "Bash Scripting", percentage: 90 },
-                    { skill: "CI/CD", percentage: 95 },
-                    { skill: "Monitoring", percentage: 85 },
-                  { skill: "Git", percentage: 95 }
-                ].map((item) => (
-                  <Gauge key={item.skill} skill={item.skill} percentage={item.percentage} />
-                ))}
+            <section class="my-8">
+              <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Skills Dashboard</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full">
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Docker</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Kubernetes</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">AWS</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Jenkins</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:75%"></div></div><p class="text-right text-green-400">75%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Terraform</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:70%"></div></div><p class="text-right text-green-400">70%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Python</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Bash Scripting</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">CI/CD</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Monitoring</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
+                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Git</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
               </div>
             </section>
-
-            {/* Experience and Jobs Timeline Section */}
-            <section className="my-12">
-              <h2 className="text-3xl font-bold text-center mb-6">> Experience Timeline</h2>
-              <div className="relative">
-                {[
-                  {
-                    company: "CSG",
-                    role: "DevOps Engineer - 2",
-                    duration: "April 2023 - Present",
-                    responsibilities: [
-                      "Designed and implemented CI/CD pipelines using Rundeck and Chef",
-                      "Managed Kubernetes clusters on AWS EKS for high-availability applications.",
-                      "Migrated Legacy build systems to modern enterprise solutions.",
-                      "Fluentbit integration for real-time log monitoring and alerting."
-                    ]
-                  },
-                  {
-                    company: "Rakuten",
-                    role: "DevOps Engineer",
-                    duration: "April 2022 - March 2023",
-                    responsibilities: [
-                      "Deployed and monitored microservices on Docker Swarm.",
-                      "Optimized AWS resource usage, reducing costs by 20%.",
-                      "Integrated monitoring tools like Prometheus and Grafana."
-                    ]
-                  },
-                  {
-                    company: "Tata Consultancy Services",
-                    role: "Assistant Systems Engineer",
-                    duration: "May 2021 - Feb 2022",
-                    responsibilities: [
-                      "Working with Production support team in solving issues in production environment.",
-                      "Maintained Git repositories and automated build processes.",
-                      "Assisted in migrating on-premises infrastructure to AWS.",
-                      "Scripted automation tasks using Bash and Python."
-                    ]
-                  }
-                ].map((job, index) => (
-                  <TimelineNode
-                    key={index}
-                    company={job.company}
-                    role={job.role}
-                    duration={job.duration}
-                    responsibilities={job.responsibilities}
-                  />
-                ))}
+            <section class="my-8">
+              <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Experience Timeline</h2>
+              <div class="relative">
+                <div class="relative pl-8 sm:pl-32 py-6 group"><div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div><div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div><div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer - 2</h3><p class="text-lg text-white">CSG</p><p class="text-sm text-gray-400">April 2023 - Present</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li><li>Managed Kubernetes clusters on AWS EKS for high-availability applications.</li><li>Migrated Legacy build systems to modern enterprise solutions.</li><li>Fluentbit integration for real-time log monitoring and alerting.</li></ul></div></div>
+                <div class="relative pl-8 sm:pl-32 py-6 group"><div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div><div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div><div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer</h3><p class="text-lg text-white">Rakuten</p><p class="text-sm text-gray-400">April 2022 - March 2023</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Deployed and monitored microservices on Docker Swarm.</li><li>Optimized AWS resource usage, reducing costs by 20%.</li><li>Integrated monitoring tools like Prometheus and Grafana.</li></ul></div></div>
+                <div class="relative pl-8 sm:pl-32 py-6 group"><div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div><div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div><div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div></div>
               </div>
             </section>
-
-            {/* Workflow Simulator Section */}
-            <section className="my-12">
-              <h2 className="text-3xl font-bold text-center mb-6">> Workflow Simulator</h2>
-              <WorkflowSimulator />
-            </section>
-
-            {/* Projects Section */}
-            <section className="my-12">
-              <h2 className="text-3xl font-bold text-center mb-6">> Projects</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "CI/CD Pipeline with Jenkins",
-                    desc: "Automated build and deployment pipeline for a microservices architecture using Jenkins and Docker.",
-                    link: "#"
-                  },
-                  {
-                    title: "Kubernetes Cluster Setup",
-                    desc: "Deployed a highly available Kubernetes cluster on AWS with auto-scaling and monitoring.",
-                    link: "#"
-                  },
-                  {
-                    title: "Infrastructure as Code",
-                    desc: "Provisioned cloud infrastructure using Terraform for a scalable web application.",
-                    link: "#"
-                  }
-                ].map((project) => (
-                  <div
-                    key={project.title}
-                    className="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition"
-                  >
-                    <h3 className="text-xl font-bold">{project.title}</h3>
-                    <p className="mt-2 text-gray-300">{project.desc}</p>
-                    <a
-                      href={project.link}
-                      className="mt-4 inline-block text-green-400 hover:underline"
-                    >
-                      View Project
-                    </a>
-                  </div>
-                ))}
+            <section class="my-8">
+              <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Projects</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">CI/CD Pipeline with Jenkins</h3><p class="mt-2 text-gray-300">Automated build and deployment pipeline for a microservices architecture using Jenkins and Docker.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
+                <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Kubernetes Cluster Setup</h3><p class="mt-2 text-gray-300">Deployed a highly available Kubernetes cluster on AWS with auto-scaling and monitoring.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
+                <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Infrastructure as Code</h3><p class="mt-2 text-gray-300">Provisioned cloud infrastructure using Terraform for a scalable web application.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
               </div>
             </section>
-
-            {/* Footer */}
-            <footer className="text-center py-6">
-              <p className="text-gray-400">
-                © 2025 Harry | Built with ❤️
-              </p>
+            <footer class="text-center py-6">
+              <p class="text-gray-400">© 2025 Harry | Built with ❤️</p>
             </footer>
           </div>
-
-          {/* Custom CSS for Typing Animation and Holographic Effect */}
-          <style jsx>{`
-            @keyframes type {
-              from { width: 0; }
-              to { width: 100%; }
-            }
-            .animate-type {
-              display: inline-block;
-              overflow: hidden;
-              white-space: nowrap;
-              animation: type 6s steps(40, end) infinite;
-            }
-            .hologram {
-              position: relative;
-              color: #00ff00;
-              text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);
-              animation: flicker 4s infinite;
-            }
-            .hologram::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              height: 2px;
-              background: rgba(0, 255, 0, 0.3);
-              animation: scanline 3s linear infinite;
-            }
-            @keyframes flicker {
-              0%, 100% { opacity: 1; }
-              50% { opacity: 0.95; }
-              75% { opacity: 0.98; }
-            }
-            @keyframes scanline {
-              0% { top: 0; }
-              100% { top: 100%; }
-            }
-          `}</style>
+          <style>
+            html, body { width: 100vw; overflow-x: hidden; }
+            @keyframes type { from { width: 0; } to { width: 100%; } }
+            .animate-type { display: inline-block; overflow: hidden; white-space: nowrap; animation: type 6s steps(40, end) infinite; }
+            .hologram { position: relative; color: #00ff00; text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4); animation: flicker 4s infinite; }
+            .hologram::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(0, 255, 0, 0.3); animation: scanline 3s linear infinite; }
+            @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } 75% { opacity: 0.98; } }
+            @keyframes scanline { 0% { top: 0; } 100% { top: 100%; } }
+          </style>
         </div>
-      );
+        <script>
+          function showDeployMsg() {
+            var msg = document.getElementById('deploy-msg');
+            if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
+          }
+        <\/script>
+        `;
+      }, 10000);
+    });
+
+    // Gauge rendering
+    function createGauge(skill, percentage) {
+      var container = document.createElement('div');
+      container.className = 'relative flex flex-col items-center p-4 bg-gray-800 rounded-lg hover:scale-105 transition duration-300';
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'w-24 h-24');
+      svg.setAttribute('viewBox', '0 0 100 100');
+      var circleBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circleBg.setAttribute('class', 'text-gray-600');
+      circleBg.setAttribute('stroke-width', '10');
+      circleBg.setAttribute('stroke', 'currentColor');
+      circleBg.setAttribute('fill', 'transparent');
+      circleBg.setAttribute('r', '40');
+      circleBg.setAttribute('cx', '50');
+      circleBg.setAttribute('cy', '50');
+      svg.appendChild(circleBg);
+      var circleFg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circleFg.setAttribute('class', 'text-green-500');
+      circleFg.setAttribute('stroke-width', '10');
+      circleFg.setAttribute('stroke-dasharray', (percentage * 2.51) + ',251.2');
+      circleFg.setAttribute('stroke-dashoffset', '0');
+      circleFg.setAttribute('stroke-linecap', 'round');
+      circleFg.setAttribute('stroke', 'currentColor');
+      circleFg.setAttribute('fill', 'transparent');
+      circleFg.setAttribute('r', '40');
+      circleFg.setAttribute('cx', '50');
+      circleFg.setAttribute('cy', '50');
+      circleFg.setAttribute('transform', 'rotate(-90 50 50)');
+      svg.appendChild(circleFg);
+      var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', '50');
+      text.setAttribute('y', '50');
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dy', '.3em');
+      text.setAttribute('class', 'text-xl font-bold text-white');
+      text.textContent = percentage + '%';
+      svg.appendChild(text);
+      container.appendChild(svg);
+      var h3 = document.createElement('h3');
+      h3.className = 'mt-2 text-lg font-bold text-white';
+      h3.textContent = skill;
+      container.appendChild(h3);
+      return container;
     }
 
-    ReactDOM.render(<App />, document.getElementById("root"));
+    // Timeline rendering
+    function createTimelineNode(company, role, duration, responsibilities) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'relative pl-8 sm:pl-32 py-6 group';
+      var abs1 = document.createElement('div');
+      abs1.className = 'absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition';
+      wrapper.appendChild(abs1);
+      var abs2 = document.createElement('div');
+      abs2.className = 'absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition';
+      wrapper.appendChild(abs2);
+      var card = document.createElement('div');
+      card.className = 'bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition';
+      var h3 = document.createElement('h3');
+      h3.className = 'text-xl font-bold text-green-400';
+      h3.textContent = role;
+      card.appendChild(h3);
+      var p1 = document.createElement('p');
+      p1.className = 'text-lg text-white';
+      p1.textContent = company;
+      card.appendChild(p1);
+      var p2 = document.createElement('p');
+      p2.className = 'text-sm text-gray-400';
+      p2.textContent = duration;
+      card.appendChild(p2);
+      var ul = document.createElement('ul');
+      ul.className = 'mt-2 text-gray-300 list-disc list-inside';
+      responsibilities.forEach(function(item) {
+        var li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+      wrapper.appendChild(card);
+      return wrapper;
+    }
+
+    // Render main content after loader
+    function renderPortfolio() {
+      var root = document.getElementById('root');
+      root.innerHTML = '';
+      var main = document.createElement('div');
+      main.className = 'flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white';
+      var h1 = document.createElement('h1');
+      h1.className = 'text-4xl font-bold mb-8';
+      h1.textContent = "Welcome to Harry's Portfolio";
+      main.appendChild(h1);
+      var container = document.createElement('div');
+      container.className = 'w-full max-w-4xl space-y-8';
+      // Skills
+      var h2skills = document.createElement('h2');
+      h2skills.className = 'text-2xl font-semibold mb-4 mt-8';
+      h2skills.textContent = 'Skills';
+      container.appendChild(h2skills);
+      var skillsGrid = document.createElement('div');
+      skillsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4';
+      [
+        ['React', 90],
+        ['Node.js', 80],
+        ['Docker', 75],
+        ['Kubernetes', 60],
+        ['CI/CD', 85],
+        ['AWS', 70]
+      ].forEach(function(skill) {
+        skillsGrid.appendChild(createGauge(skill[0], skill[1]));
+      });
+      container.appendChild(skillsGrid);
+      // Timeline
+      var h2exp = document.createElement('h2');
+      h2exp.className = 'text-2xl font-semibold mb-4 mt-8';
+      h2exp.textContent = 'Experience Timeline';
+      container.appendChild(h2exp);
+      container.appendChild(createTimelineNode(
+        'Tech Solutions Inc.',
+        'DevOps Engineer',
+        '2022 - Present',
+        ['Implemented CI/CD pipelines', 'Managed cloud infrastructure', 'Automated deployments']
+      ));
+      container.appendChild(createTimelineNode(
+        'Web Innovators',
+        'Frontend Developer',
+        '2020 - 2022',
+        ['Built React applications', 'Collaborated with designers', 'Optimized web performance']
+      ));
+      main.appendChild(container);
+      root.appendChild(main);
+    }
+
+    // After loader, render portfolio
+    setTimeout(renderPortfolio, 10000);
   </script>
 </body>
 </html>

@@ -23,10 +23,6 @@
       align-items: center;
       transition: opacity 0.5s ease-out;
     }
-    #loading-screen.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
     #loading-video {
       width: 100%;
       height: 100%;
@@ -41,19 +37,12 @@
   </style>
 </head>
 <body>
-  <div id="loading-screen">
-    <video id="loading-video" autoplay muted>
-      <source src="assets/loading.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
+  <!-- Loading screen removed -->
   <div id="root"></div>
   <script>
-    // Loader logic
+    // Loader logic removed
     document.addEventListener('DOMContentLoaded', function() {
-      var loadingScreen = document.getElementById('loading-screen');
       var root = document.getElementById('root');
-      // Make showDeployMsg globally available
       window.showDeployMsg = function() {
         var msg = document.getElementById('deploy-msg');
         var btn = document.getElementById('deploy-btn');
@@ -69,18 +58,14 @@
             btn.style.display = '';
             btn.style.justifyContent = '';
             btn.style.alignItems = '';
-            // Re-attach click handler after innerHTML reset
             btn.onclick = window.showDeployMsg;
           }, 1800);
         }
         if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
       };
 
-      setTimeout(function() {
-        if (loadingScreen) loadingScreen.remove();
-        if (root) root.style.display = 'block';
-        // Insert the portfolio HTML content after video
-        root.innerHTML = `
+      if (root) root.style.display = 'block';
+      root.innerHTML = `
         <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
           <!-- Top-left round icon -->
           <img src="assets/image.png" alt="Profile Icon" class="fixed top-4 left-4 w-14 h-14 rounded-full shadow-lg border-2 border-green-400 bg-gray-800 object-cover z-50" style="background:#222;" loading="lazy" />
@@ -290,7 +275,6 @@
           }
         }, 800); // delay after content appears
       }, 10000);
-    });
 
 
     // Gauge rendering

@@ -98,7 +98,7 @@
                 </div>
                 <div class="relative pl-8 sm:pl-32 py-6 group">
                   <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
                   <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
                   <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div>
                 </div>
@@ -128,21 +128,6 @@
             img[alt="Katana Icon"], img[alt="Katana Divider"], img[alt="Katana Watermark"] {
               background: transparent !important;
             }
-            .sakura-petal {
-              position: fixed;
-              top: -40px;
-              width: 32px;
-              height: 32px;
-              pointer-events: none;
-              z-index: 40;
-              opacity: 0.7;
-              animation: sakura-fall linear infinite;
-            }
-            @keyframes sakura-fall {
-              0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.7; }
-              80% { opacity: 0.8; }
-              100% { transform: translateY(110vh) rotate(360deg) scale(0.8); opacity: 0.2; }
-            }
             .jp-border {
               border: 2px solid #f472b6;
               border-radius: 1rem;
@@ -152,19 +137,6 @@
         </div>
       `;
       if (root) root.style.display = 'block';
-
-      // Sakura petal animation
-      function createSakuraPetal() {
-        var petal = document.createElement('img');
-        petal.src = 'https://cdn.jsdelivr.net/gh/harry10799.github.io/assets/sakura-petal.png';
-        petal.className = 'sakura-petal';
-        var left = Math.random() * 100;
-        petal.style.left = left + 'vw';
-        petal.style.animationDuration = (6 + Math.random() * 4) + 's';
-        document.body.appendChild(petal);
-        setTimeout(function() { petal.remove(); }, 11000);
-      }
-      setInterval(createSakuraPetal, 900);
 
       // Deploy button logic
       function showDeployMsg() {
@@ -190,10 +162,6 @@
           setTimeout(function() { msg.style.display = 'none'; }, 3000);
         }
       }
-
-      // Attach click handler
-      var deployBtn = document.getElementById('deploy-btn');
-      if (deployBtn) deployBtn.onclick = showDeployMsg;
 
       // Name transition effect
       setTimeout(function() {

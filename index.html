@@ -29,192 +29,404 @@
       object-fit: cover;
     }
     #root {
-      display: none;
-    }
-    #root.visible {
       display: block;
+    }
+    .flying-dragon {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0.8;
+      animation: fly linear infinite;
+    }
+    @keyframes fly {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(50vw, 20vh) rotate(15deg); }
+      50% { transform: translate(80vw, 50vh) rotate(-15deg); }
+      75% { transform: translate(30vw, 80vh) rotate(10deg); }
+      100% { transform: translate(0, 100vh) rotate(0deg); }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      color: white;
+      position: relative;
+      margin: 0;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #94a3b8;
+    }
+    .close:hover {
+      color: #f472b6;
     }
   </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var root = document.getElementById('root');
-      root.innerHTML = `
-        <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
-          <!-- Top-left round icon -->
-          <img src="assets/image.png" alt="Profile Icon" class="fixed top-4 left-4 w-14 h-14 rounded-full shadow-lg border-2 border-green-400 bg-gray-800 object-cover z-50" style="background:#222;" loading="lazy" />
-          <div id="particles-js" class="absolute inset-0 z-0"></div>
-          <div class="relative z-10 w-full px-2 sm:px-4 py-4">
-            <header class="text-center py-8 flex flex-col items-center">
-              <h1 class="text-4xl sm:text-5xl font-bold hologram">
-                <span class="text-green-400">&gt; </span><span id="name-transition">ハリクマール・ペダコトラ</span>
-              </h1>
-              <p class="text-xl sm:text-2xl mt-2 text-gray-300 break-words max-w-full whitespace-normal">
-                <span class="block animate-type hologram w-full text-center">
-                  DevOps Engineer
-                  <span class="hidden sm:inline"> | Automation Enthusiast</span>
-                </span>
-              </p>
-              <button id="deploy-btn" class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition flex items-center justify-center gap-2" onclick="showDeployMsg()">Deploy Now</button>
-              <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;">Deployment Initiated!</p>
-            </header>
-            <section class="my-8">
-              <div class="flex justify-center items-center mb-2">
-                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-0 flex items-center gap-2">&gt; Skills Dashboard
-                  <img src="assets/katana.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
-                </h2>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full">
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Docker</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Kubernetes</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">AWS</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Jenkins</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:75%"></div></div><p class="text-right text-green-400">75%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Terraform</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:70%"></div></div><p class="text-right text-green-400">70%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Python</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Bash Scripting</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">CI/CD</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Monitoring</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
-                <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Git</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
-              </div>
-            </section>
-            <section class="my-8">
-              <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2 flex items-center gap-2 justify-center">&gt; Experience Timeline
-                <img src="assets/katana-2.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
-              </h2>
-              <div class="relative">
-                <div class="relative pl-8 sm:pl-32 py-6 group">
-                  <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
-                  <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer - 2</h3><p class="text-lg text-white">CSG</p><p class="text-sm text-gray-400">April 2023 - Present</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li><li>Managed Kubernetes clusters on AWS EKS for high-availability applications.</li><li>Migrated Legacy build systems to modern enterprise solutions.</li><li>Fluentbit integration for real-time log monitoring and alerting.</li></ul></div>
-                </div>
-                <div class="relative pl-8 sm:pl-32 py-6 group">
-                  <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
-                  <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">DevOps Engineer</h3><p class="text-lg text-white">Rakuten</p><p class="text-sm text-gray-400">April 2022 - March 2023</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Deployed and monitored microservices on Docker Swarm.</li><li>Optimized AWS resource usage, reducing costs by 20%.</li><li>Integrated monitoring tools like Prometheus and Grafana.</li></ul></div>
-                </div>
-                <div class="relative pl-8 sm:pl-32 py-6 group">
-                  <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-                  <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
-                  <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div>
-                </div>
-              </div>
-            </section>
-            <section class="my-8">
-              <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Projects</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">CI/CD Pipeline with Jenkins</h3><p class="mt-2 text-gray-300">Automated build and deployment pipeline for a microservices architecture using Jenkins and Docker.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
-                <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Kubernetes Cluster Setup</h3><p class="mt-2 text-gray-300">Deployed a highly available Kubernetes cluster on AWS with auto-scaling and monitoring.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
-                <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Infrastructure as Code</h3><p class="mt-2 text-gray-300">Provisioned cloud infrastructure using Terraform for a scalable web application.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
-              </div>
-            </section>
-            <footer class="text-center py-6">
-              <img src="assets/katana.png" alt="Katana Watermark" class="fixed bottom-2 right-2 w-16 h-6 opacity-30 pointer-events-none select-none z-30" style="transform: rotate(15deg);" loading="lazy" />
-              <p class="text-gray-400">© 2025 ハリー | Built with ❤️<br><span class="block text-pink-300 mt-2" style="font-family: 'Noto Sans JP', sans-serif;">「継続は力なり」- Perseverance is power</span></p>
-            </footer>
+  <div id="root">
+    <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
+      <!-- Top-left round icon -->
+      <img src="assets/image.png" alt="Profile Icon" class="fixed top-4 left-4 w-14 h-14 rounded-full shadow-lg border-2 border-green-400 bg-gray-800 object-cover z-50" style="background:#222;" loading="lazy" />
+      <div id="particles-js" class="absolute inset-0 z-0"></div>
+      <div class="relative z-10 w-full px-2 sm:px-4 py-4">
+        <header class="text-center py-8 flex flex-col items-center">
+          <h1 class="text-4xl sm:text-5xl font-bold hologram">
+            <span class="text-green-400">&gt; </span><span id="name-transition">ハリクマール・ペダコトラ</span>
+          </h1>
+          <p class="text-xl sm:text-2xl mt-2 text-gray-300 break-words max-w-full whitespace-normal">
+            <span class="block animate-type hologram w-full text-center">
+              DevOps Engineer
+              <span class="hidden sm:inline"> | Automation Enthusiast</span>
+            </span>
+          </p>
+          <button id="deploy-btn" class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition flex items-center justify-center gap-2" onclick="openModal()">Deploy a Message 🚀</button>
+          <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;">Message Sent!</p>
+        </header>
+        <section class="my-8">
+          <div class="flex justify-center items-center mb-2">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-0 flex items-center gap-2">&gt; Skills Dashboard
+              <img src="assets/katana.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
+            </h2>
           </div>
-          <style>
-            html, body { width: 100vw; overflow-x: hidden; }
-            @keyframes type { from { width: 0; } to { width: 100%; } }
-            .animate-type { display: inline-block; overflow: hidden; white-space: nowrap; animation: type 6s steps(40, end) infinite; }
-            .hologram { position: relative; color: #00ff00; text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4); animation: flicker 4s infinite; }
-            .hologram::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(0, 255, 0, 0.3); animation: scanline 3s linear infinite; }
-            @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } 75% { opacity: 0.98; } }
-            @keyframes scanline { 0% { top: 0; } 100% { top: 100%; } }
-            img[alt="Katana Icon"], img[alt="Katana Divider"], img[alt="Katana Watermark"] {
-              background: transparent !important;
-            }
-            .jp-border {
-              border: 2px solid #f472b6;
-              border-radius: 1rem;
-              box-shadow: 0 0 0 2px #fff1f2, 0 2px 16px 0 #f472b633;
-            }
-          </style>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full">
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Docker</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Kubernetes</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">AWS</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Jenkins</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:75%"></div></div><p class="text-right text-green-400">75%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h2 class="text-lg font-bold text-white">Terraform</h2><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:70%"></div></div><p class="text-right text-green-400">70%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Python</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Bash Scripting</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">CI/CD</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Monitoring</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
+            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Git</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
+          </div>
+        </section>
+        <section class="my-8">
+          <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2 flex items-center gap-2 justify-center">&gt; Experience Timeline
+            <img src="assets/katana-2.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
+          </h2>
+          <div class="relative">
+            <div class="relative pl-8 sm:pl-32 py-6 group">
+              <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+              <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+              <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition">
+                <h3 class="text-xl font-bold text-green-400">DevOps Engineer - 2</h3>
+                <p class="text-lg text-white">CSG</p>
+                <p class="text-sm text-gray-400">August 2024 - Present</p>
+                <ul class="mt-2 text-gray-300 list-disc list-inside">
+                  <li>Managed Kubernetes clusters on TANZU(VMWARE) and AWS EKS for high-availability applications.</li>
+                  <li>Migrated Legacy build systems to modern enterprise solutions.</li>
+                  <li>Orchestrated Kubernetes clusters to deploy and manage containerized applications, ensuring high availability, scalability, and efficient resource utilisation. </li>
+                  <li>Provided technical guidance and support to team members, fostering a culture of continuous learning and innovation.</li>
+                  <li>Fluentbit integration for real-time log monitoring and alerting.</li>
+                  <li>Leveraged FLUX CD for GitOps-based continuous delivery, automating application deployment and ensuring consistency across multiple environments.</li>
+                  <li>Conducted regular system audits and implemented security best practices to ensure compliance with industry standards. </li>
+                  <li>Implemented monitoring solutions using Prometheus and Grafana to track system performance, collect metrics, and visualise data for effective decision-making. </li>
+                </ul>
+              </div>
+              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition">
+                <h3 class="text-xl font-bold text-green-400">DevOps Engineer - 1</h3>
+                <p class="text-lg text-white">CSG</p>
+                <p class="text-sm text-gray-400">April 2023 - August 2024</p>
+                <ul class="mt-2 text-gray-300 list-disc list-inside">
+                  <li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li>
+                  <li>Automated the validation process and created CVPS(Continous Validation Process)</li>
+                  <li>Collaborated with development and operations teams to streamline release cycles and improve deployment processes. </li>
+                  <li>Migrated Legacy build systems to modern enterprise solutions.</li>
+                  <li>Developed and deployed Selenuim based automation for Legacy GUI Applications</li>
+                  <li>Good Knowledge of creating users and restricting permissions to the jobs and giving access to the respective jobs by customising the permissions in Jenkins..</li>
+                  <li>Decreased the deployment time by 1 hr using Rundeck and automation scripts</li>
+                </ul>
+              </div>
+            </div>
+            <div class="relative pl-8 sm:pl-32 py-6 group">
+              <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+              <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+              <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Associate Software Engineer</h3><p class="text-lg text-white">Rakuten</p><p class="text-sm text-gray-400">April 2022 - March 2023</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Deployed and monitored microservices on Docker Swarm.</li><li>Optimized AWS resource usage, reducing costs by 20%.</li><li>Integrated monitoring tools like Prometheus and Grafana.</li></ul></div>
+            </div>
+            <div class="relative pl-8 sm:pl-32 py-6 group">
+              <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
+              <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
+              <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
+              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div>
+            </div>
+          </div>
+        </section>
+        <section class="my-8">
+          <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Projects</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">CI/CD Pipeline with Jenkins</h3><p class="mt-2 text-gray-300">Automated build and deployment pipeline for a microservices architecture using Jenkins and Docker.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
+            <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Kubernetes Cluster Setup</h3><p class="mt-2 text-gray-300">Deployed a highly available Kubernetes cluster on AWS with auto-scaling and monitoring.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
+            <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Infrastructure as Code</h3><p class="mt-2 text-gray-300">Provisioned cloud infrastructure using Terraform for a scalable web application.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
+          </div>
+        </section>
+        <footer class="text-center py-6">
+          <img src="assets/katana.png" alt="Katana Watermark" class="fixed bottom-2 right-2 w-16 h-6 opacity-30 pointer-events-none select-none z-30" style="transform: rotate(15deg);" loading="lazy" />
+          <p class="text-gray-400">© 2025 ハリー | Built with ❤️<br><span class="block text-pink-300 mt-2" style="font-family: 'Noto Sans JP', sans-serif;">「継続は力なり」- Perseverance is power</span><br><span id="current-date-time" class="text-gray-500 mt-1"></span></p>
+        </footer>
+        <div id="contact-modal" class="modal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="contact-form-root"></div>
+          </div>
         </div>
-      `;
-      if (root) root.style.display = 'block';
-
-      // Deploy button logic
-      function showDeployMsg() {
-        var msg = document.getElementById('deploy-msg');
-        var btn = document.getElementById('deploy-btn');
-        if (btn) {
-          var orig = btn.getAttribute('data-orig') || btn.innerHTML;
-          btn.setAttribute('data-orig', orig);
-          btn.innerHTML = '<span>Deploy</span> <img src="assets/katana-2.png" alt="Katana Highlight" class="inline-block w-7 h-5 ml-2 align-middle" style="transform: rotate(-20deg);" />';
-          btn.style.display = 'inline-flex';
-          btn.style.justifyContent = 'center';
-          btn.style.alignItems = 'center';
-          setTimeout(function() {
-            btn.innerHTML = orig;
-            btn.style.display = '';
-            btn.style.justifyContent = '';
-            btn.style.alignItems = '';
-            btn.onclick = showDeployMsg;
-          }, 1800);
-        }
-        if (msg) {
-          msg.style.display = 'block';
-          setTimeout(function() { msg.style.display = 'none'; }, 3000);
-        }
+      </div>
+    </div>
+  </div>
+  <script type="text/babel">
+    // Modal control functions
+    window.openModal = function() {
+      const modal = document.getElementById('contact-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        ReactDOM.render(<ContactForm />, document.getElementById('contact-form-root'));
       }
+    };
 
-      // Name transition effect
-      setTimeout(function() {
-        var nameSpan = document.getElementById('name-transition');
-        if (nameSpan) {
-          var jp = 'ハリクマール・ペダコトラ';
-          var en = 'Harikumar Peddakotla';
-          var maxLen = Math.max(jp.length, en.length);
-          nameSpan.style.transition = 'opacity 0.3s';
-          nameSpan.style.opacity = 0;
-          setTimeout(function() {
-            nameSpan.style.opacity = 1;
-            nameSpan.innerHTML = '';
-            for (var k = 0; k < maxLen; k++) {
-              var span = document.createElement('span');
-              if (en[k] === ' ') {
-                span.textContent = jp[k] ? jp[k] : '\u00A0';
-              } else {
-                span.textContent = jp[k] ? jp[k] : '';
-              }
-              span.style.display = 'inline-block';
-              span.style.transition = 'opacity 0.3s, transform 0.3s';
-              span.style.fontFamily = 'inherit';
-              nameSpan.appendChild(span);
+    window.closeModal = function() {
+      const modal = document.getElementById('contact-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        ReactDOM.unmountComponentAtNode(document.getElementById('contact-form-root'));
+      }
+    };
+
+    // Deploy message function
+    window.showDeployMsg = function() {
+      const msg = document.getElementById('deploy-msg');
+      if (msg) {
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+      }
+    };
+
+    // Name transition effect
+    setTimeout(() => {
+      const nameSpan = document.getElementById('name-transition');
+      if (nameSpan) {
+        const jp = 'ハリクマール・ペダコトラ';
+        const en = 'Harikumar Peddakotla';
+        const maxLen = Math.max(jp.length, en.length);
+        nameSpan.style.transition = 'opacity 0.3s';
+        nameSpan.style.opacity = 0;
+        setTimeout(() => {
+          nameSpan.style.opacity = 1;
+          nameSpan.innerHTML = '';
+          for (let k = 0; k < maxLen; k++) {
+            const span = document.createElement('span');
+            if (en[k] === ' ') {
+              span.textContent = jp[k] ? jp[k] : '\u00A0';
+            } else {
+              span.textContent = jp[k] ? jp[k] : '';
             }
-            var i = 0;
-            var interval = setInterval(function() {
-              var spans = nameSpan.children;
-              if (i < maxLen) {
-                var s = spans[i];
-                if (s) {
-                  s.style.opacity = 0;
-                  s.style.transform = 'scale(1.5)';
-                  setTimeout(function(span, idx) {
-                    return function() {
-                      if (en[idx] === ' ') {
-                        span.textContent = '\u00A0';
-                      } else {
-                        span.textContent = en[idx] ? en[idx] : '';
-                      }
-                      span.style.opacity = 1;
-                      span.style.transform = 'scale(1)';
-                    }
-                  }(s, i), 200);
-                }
+            span.style.display = 'inline-block';
+            span.style.transition = 'opacity 0.3s, transform 0.3s';
+            span.style.fontFamily = 'inherit';
+            nameSpan.appendChild(span);
+          }
+          let i = 0;
+          const interval = setInterval(() => {
+            const spans = nameSpan.children;
+            if (i < maxLen) {
+              const s = spans[i];
+              if (s) {
+                s.style.opacity = 0;
+                s.style.transform = 'scale(1.5)';
+                setTimeout((span, idx) => {
+                  if (en[idx] === ' ') {
+                    span.textContent = '\u00A0';
+                  } else {
+                    span.textContent = en[idx] ? en[idx] : '';
+                  }
+                  span.style.opacity = 1;
+                  span.style.transform = 'scale(1)';
+                }, 200, s, i);
               }
-              i++;
-              if (i > maxLen) clearInterval(interval);
-            }, 100);
-          }, 300);
+            }
+            i++;
+            if (i > maxLen) clearInterval(interval);
+          }, 100);
+        }, 300);
+      }
+    }, 800);
+
+    // Flying dragon animation
+    // function createFlyingDragon() {
+    //   const dragon = document.createElement('img');
+    //   dragon.src = 'https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c529.png';
+    //   dragon.alt = 'Flying Dragon';
+    //   dragon.className = 'flying-dragon';
+    //   dragon.style.left = Math.random() * 90 + 'vw';
+    //   dragon.style.top = Math.random() * 50 + 'vh';
+    //   dragon.style.animationDuration = (5 + Math.random() * 5) + 's';
+    //   document.body.appendChild(dragon);
+    //   setTimeout(() => {
+    //     if (dragon.parentNode) {
+    //       dragon.remove();
+    //     }
+    //     setTimeout(createFlyingDragon, Math.random() * 2000 + 1000);
+    //   }, 5000 + Math.random() * 5000);
+    // }
+
+    // setTimeout(createFlyingDragon, 1000);
+
+    // Update date and time
+    function updateDateTime() {
+      const now = new Date();
+      const options = {
+        timeZone: 'Asia/Kolkata',
+        hour12: true,
+        hour: '2-digit',
+        minute: '2-digit',
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+      const dateTimeString = now.toLocaleString('en-US', options).replace(' at', ',');
+      const dateTimeElement = document.getElementById('current-date-time');
+      if (dateTimeElement) {
+        dateTimeElement.textContent = dateTimeString;
+      }
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+
+    // ContactForm Component
+    function ContactForm() {
+      const [formData, setFormData] = React.useState({
+        name: "",
+        email: "",
+        message: "",
+        company: ""
+      });
+      const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+      const handleSubmit = async (event) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+          const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_key: "DUMMY", // Replace with your Web3Forms access key
+              ...formData
+            }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            alert("Message sent successfully!");
+            setFormData({ name: "", email: "", message: "", company: "" });
+            closeModal();
+          } else {
+            alert("Failed to send message. Please try again.");
+          }
+        } catch (error) {
+          console.error("Submission error:", error);
+          alert("An error occurred. Please try again.");
+        } finally {
+          setIsSubmitting(false);
         }
-      }, 800);
-    });
+      };
+
+      const handleChange = (e) => {
+        setFormData({
+          ...formData,
+          [e.target.name]: e.target.value
+        });
+      };
+
+      return (
+        <div style={{ maxWidth: "500px", margin: "0 auto", padding: "20px" }}>
+          <h2>Contact Me</h2>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: "15px" }}>
+              <label htmlFor="name">Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
+              />
+            </div>
+            <div style={{ marginBottom: "15px" }}>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
+              />
+            </div>
+            <div style={{ marginBottom: "15px" }}>
+              <label htmlFor="message">Message:</label>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows="5"
+                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
+              />
+            </div>
+            <div style={{ marginBottom: "15px" }}>
+              <label htmlFor="company">Company (Optional):</label>
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
+                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                background: "#007bff",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "4px",
+                cursor: isSubmitting ? "not-allowed" : "pointer"
+              }}
+            >
+              {isSubmitting ? "Sending..." : "Send Message"}
+            </button>
+          </form>
+        </div>
+      );
+    }
   </script>
 </body>
 </html>

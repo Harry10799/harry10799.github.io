@@ -37,34 +37,10 @@
   </style>
 </head>
 <body>
-  <!-- Loading screen removed -->
   <div id="root"></div>
   <script>
-    // Loader logic removed
     document.addEventListener('DOMContentLoaded', function() {
       var root = document.getElementById('root');
-      window.showDeployMsg = function() {
-        var msg = document.getElementById('deploy-msg');
-        var btn = document.getElementById('deploy-btn');
-        if (btn) {
-          var orig = btn.getAttribute('data-orig') || btn.innerHTML;
-          btn.setAttribute('data-orig', orig);
-          btn.innerHTML = '<span>Deployed</span> <img src="assets/katana-2.png" alt="Katana Highlight" class="inline-block w-7 h-5 ml-2 align-middle" style="transform: rotate(-20deg);" />';
-          btn.style.display = 'inline-flex';
-          btn.style.justifyContent = 'center';
-          btn.style.alignItems = 'center';
-          setTimeout(function() {
-            btn.innerHTML = orig;
-            btn.style.display = '';
-            btn.style.justifyContent = '';
-            btn.style.alignItems = '';
-            btn.onclick = window.showDeployMsg;
-          }, 1800);
-        }
-        if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
-      };
-
-      if (root) root.style.display = 'block';
       root.innerHTML = `
         <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
           <!-- Top-left round icon -->
@@ -81,15 +57,14 @@
                   <span class="hidden sm:inline"> | Automation Enthusiast</span>
                 </span>
               </p>
-              <button id="deploy-btn" class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition flex items-center justify-center gap-2">Deploy Now</button>
-              <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;"></p>
+              <button id="deploy-btn" class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition flex items-center justify-center gap-2" onclick="showDeployMsg()">Deploy Now</button>
+              <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;">Deployment Initiated!</p>
             </header>
             <section class="my-8">
               <div class="flex justify-center items-center mb-2">
                 <h2 class="text-2xl sm:text-3xl font-bold text-center mb-0 flex items-center gap-2">&gt; Skills Dashboard
                   <img src="assets/katana.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
                 </h2>
-              </div>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full">
                 <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Docker</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
@@ -103,13 +78,11 @@
                 <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Monitoring</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
                 <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Git</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
               </div>
-                <!-- Katana divider moved to Experience Timeline section -->
             </section>
             <section class="my-8">
               <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2 flex items-center gap-2 justify-center">&gt; Experience Timeline
                 <img src="assets/katana-2.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
               </h2>
-
               <div class="relative">
                 <div class="relative pl-8 sm:pl-32 py-6 group">
                   <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
@@ -140,7 +113,7 @@
               </div>
             </section>
             <footer class="text-center py-6">
-            <img src="assets/katana.png" alt="Katana Watermark" class="fixed bottom-2 right-2 w-16 h-6 opacity-30 pointer-events-none select-none z-30" style="transform: rotate(15deg);" loading="lazy" />
+              <img src="assets/katana.png" alt="Katana Watermark" class="fixed bottom-2 right-2 w-16 h-6 opacity-30 pointer-events-none select-none z-30" style="transform: rotate(15deg);" loading="lazy" />
               <p class="text-gray-400">© 2025 ハリー | Built with ❤️<br><span class="block text-pink-300 mt-2" style="font-family: 'Noto Sans JP', sans-serif;">「継続は力なり」- Perseverance is power</span></p>
             </footer>
           </div>
@@ -152,11 +125,9 @@
             .hologram::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(0, 255, 0, 0.3); animation: scanline 3s linear infinite; }
             @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } 75% { opacity: 0.98; } }
             @keyframes scanline { 0% { top: 0; } 100% { top: 100%; } }
-            /* Ensure katana.png is always transparent background */
             img[alt="Katana Icon"], img[alt="Katana Divider"], img[alt="Katana Watermark"] {
               background: transparent !important;
             }
-            /* Sakura petal animation */
             .sakura-petal {
               position: fixed;
               top: -40px;
@@ -172,245 +143,110 @@
               80% { opacity: 0.8; }
               100% { transform: translateY(110vh) rotate(360deg) scale(0.8); opacity: 0.2; }
             }
-            /* Japanese border for cards */
             .jp-border {
               border: 2px solid #f472b6;
               border-radius: 1rem;
               box-shadow: 0 0 0 2px #fff1f2, 0 2px 16px 0 #f472b633;
             }
-    // Sakura petal animation
-    function createSakuraPetal() {
-      var petal = document.createElement('img');
-      petal.src = 'https://cdn.jsdelivr.net/gh/harry10799.github.io/assets/sakura-petal.png';
-      petal.className = 'sakura-petal';
-      var left = Math.random() * 100;
-      petal.style.left = left + 'vw';
-      petal.style.animationDuration = (6 + Math.random() * 4) + 's';
-      document.body.appendChild(petal);
-      setTimeout(function() { petal.remove(); }, 11000);
-    }
-    setInterval(createSakuraPetal, 900);
-                  <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition jp-border">
           </style>
         </div>
-        <script>
-          function showDeployMsg() {
-            var msg = document.getElementById('deploy-msg');
-            var btn = document.getElementById('deploy-btn');
-            if (btn) {
-              var orig = btn.getAttribute('data-orig') || btn.innerHTML;
-              btn.setAttribute('data-orig', orig);
-              btn.innerHTML = '<span>Deploy</span> <img src="assets/katana-2.png" alt="Katana Highlight" class="inline-block w-7 h-5 ml-2 align-middle" style="transform: rotate(-20deg);" />';
-              btn.style.display = 'inline-flex';
-              btn.style.justifyContent = 'center';
-              btn.style.alignItems = 'center';
-              setTimeout(function() {
-                btn.innerHTML = orig;
-                btn.style.display = '';
-                btn.style.justifyContent = '';
-                btn.style.alignItems = '';
-                // Re-attach click handler after innerHTML reset
-                btn.onclick = showDeployMsg;
-              }, 1800);
-            }
-            if(msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 3000); }
-          }
+      `;
+      if (root) root.style.display = 'block';
 
-        `;
-        // Attach click handler after DOM update (must be outside the template string)
-        var deployBtn = document.getElementById('deploy-btn');
-        if (deployBtn) deployBtn.onclick = window.showDeployMsg;
-        // Name transition effect (run after DOM is updated)
-        setTimeout(function() {
-          var nameSpan = document.getElementById('name-transition');
-          if (nameSpan) {
-            var jp = 'ハリクマール・ペダコトラ';
-            var en = 'Harikumar Peddakotla';
-            var maxLen = Math.max(jp.length, en.length);
-            nameSpan.style.transition = 'opacity 0.3s';
-            nameSpan.style.opacity = 0;
-            setTimeout(function() {
-              nameSpan.style.opacity = 1;
-              // Create spans for each character
-              nameSpan.innerHTML = '';
-              for (var k = 0; k < maxLen; k++) {
-                var span = document.createElement('span');
-                // If the English char is a space, use a non-breaking space for correct spacing
-                if (en[k] === ' ') {
-                  span.textContent = jp[k] ? jp[k] : '\u00A0';
-                } else {
-                  span.textContent = jp[k] ? jp[k] : '';
-                }
-                span.style.display = 'inline-block';
-                span.style.transition = 'opacity 0.3s, transform 0.3s';
-                span.style.fontFamily = 'inherit';
-                nameSpan.appendChild(span);
+      // Sakura petal animation
+      function createSakuraPetal() {
+        var petal = document.createElement('img');
+        petal.src = 'https://cdn.jsdelivr.net/gh/harry10799.github.io/assets/sakura-petal.png';
+        petal.className = 'sakura-petal';
+        var left = Math.random() * 100;
+        petal.style.left = left + 'vw';
+        petal.style.animationDuration = (6 + Math.random() * 4) + 's';
+        document.body.appendChild(petal);
+        setTimeout(function() { petal.remove(); }, 11000);
+      }
+      setInterval(createSakuraPetal, 900);
+
+      // Deploy button logic
+      function showDeployMsg() {
+        var msg = document.getElementById('deploy-msg');
+        var btn = document.getElementById('deploy-btn');
+        if (btn) {
+          var orig = btn.getAttribute('data-orig') || btn.innerHTML;
+          btn.setAttribute('data-orig', orig);
+          btn.innerHTML = '<span>Deploy</span> <img src="assets/katana-2.png" alt="Katana Highlight" class="inline-block w-7 h-5 ml-2 align-middle" style="transform: rotate(-20deg);" />';
+          btn.style.display = 'inline-flex';
+          btn.style.justifyContent = 'center';
+          btn.style.alignItems = 'center';
+          setTimeout(function() {
+            btn.innerHTML = orig;
+            btn.style.display = '';
+            btn.style.justifyContent = '';
+            btn.style.alignItems = '';
+            btn.onclick = showDeployMsg;
+          }, 1800);
+        }
+        if (msg) {
+          msg.style.display = 'block';
+          setTimeout(function() { msg.style.display = 'none'; }, 3000);
+        }
+      }
+
+      // Attach click handler
+      var deployBtn = document.getElementById('deploy-btn');
+      if (deployBtn) deployBtn.onclick = showDeployMsg;
+
+      // Name transition effect
+      setTimeout(function() {
+        var nameSpan = document.getElementById('name-transition');
+        if (nameSpan) {
+          var jp = 'ハリクマール・ペダコトラ';
+          var en = 'Harikumar Peddakotla';
+          var maxLen = Math.max(jp.length, en.length);
+          nameSpan.style.transition = 'opacity 0.3s';
+          nameSpan.style.opacity = 0;
+          setTimeout(function() {
+            nameSpan.style.opacity = 1;
+            nameSpan.innerHTML = '';
+            for (var k = 0; k < maxLen; k++) {
+              var span = document.createElement('span');
+              if (en[k] === ' ') {
+                span.textContent = jp[k] ? jp[k] : '\u00A0';
+              } else {
+                span.textContent = jp[k] ? jp[k] : '';
               }
-              var i = 0;
-              var interval = setInterval(function() {
-                var spans = nameSpan.children;
-                if (i < maxLen) {
-                  var s = spans[i];
-                  if (s) {
-                    s.style.opacity = 0;
-                    s.style.transform = 'scale(1.5)';
-                    setTimeout(function(span, idx) {
-                      return function() {
-                        // If the English char is a space, use a non-breaking space
-                        if (en[idx] === ' ') {
-                          span.textContent = '\u00A0';
-                        } else {
-                          span.textContent = en[idx] ? en[idx] : '';
-                        }
-                        span.style.opacity = 1;
-                        span.style.transform = 'scale(1)';
+              span.style.display = 'inline-block';
+              span.style.transition = 'opacity 0.3s, transform 0.3s';
+              span.style.fontFamily = 'inherit';
+              nameSpan.appendChild(span);
+            }
+            var i = 0;
+            var interval = setInterval(function() {
+              var spans = nameSpan.children;
+              if (i < maxLen) {
+                var s = spans[i];
+                if (s) {
+                  s.style.opacity = 0;
+                  s.style.transform = 'scale(1.5)';
+                  setTimeout(function(span, idx) {
+                    return function() {
+                      if (en[idx] === ' ') {
+                        span.textContent = '\u00A0';
+                      } else {
+                        span.textContent = en[idx] ? en[idx] : '';
                       }
-                    }(s, i), 200);
-                  }
+                      span.style.opacity = 1;
+                      span.style.transform = 'scale(1)';
+                    }
+                  }(s, i), 200);
                 }
-                i++;
-                if (i > maxLen) clearInterval(interval);
-              }, 100); // speed per letter
-            }, 300);
-          }
-        }, 800); // delay after content appears
-      }, 10000);
-
-
-    // Gauge rendering
-    function createGauge(skill, percentage) {
-      var container = document.createElement('div');
-      container.className = 'relative flex flex-col items-center p-4 bg-gray-800 rounded-lg hover:scale-105 transition duration-300';
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'w-24 h-24');
-      svg.setAttribute('viewBox', '0 0 100 100');
-      var circleBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circleBg.setAttribute('class', 'text-gray-600');
-      circleBg.setAttribute('stroke-width', '10');
-      circleBg.setAttribute('stroke', 'currentColor');
-      circleBg.setAttribute('fill', 'transparent');
-      circleBg.setAttribute('r', '40');
-      circleBg.setAttribute('cx', '50');
-      circleBg.setAttribute('cy', '50');
-      svg.appendChild(circleBg);
-      var circleFg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circleFg.setAttribute('class', 'text-green-500');
-      circleFg.setAttribute('stroke-width', '10');
-      circleFg.setAttribute('stroke-dasharray', (percentage * 2.51) + ',251.2');
-      circleFg.setAttribute('stroke-dashoffset', '0');
-      circleFg.setAttribute('stroke-linecap', 'round');
-      circleFg.setAttribute('stroke', 'currentColor');
-      circleFg.setAttribute('fill', 'transparent');
-      circleFg.setAttribute('r', '40');
-      circleFg.setAttribute('cx', '50');
-      circleFg.setAttribute('cy', '50');
-      circleFg.setAttribute('transform', 'rotate(-90 50 50)');
-      svg.appendChild(circleFg);
-      var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      text.setAttribute('x', '50');
-      text.setAttribute('y', '50');
-      text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('dy', '.3em');
-      text.setAttribute('class', 'text-xl font-bold text-white');
-      text.textContent = percentage + '%';
-      svg.appendChild(text);
-      container.appendChild(svg);
-      var h3 = document.createElement('h3');
-      h3.className = 'mt-2 text-lg font-bold text-white';
-      h3.textContent = skill;
-      container.appendChild(h3);
-      return container;
-    }
-
-    // Timeline rendering
-    function createTimelineNode(company, role, duration, responsibilities) {
-      var wrapper = document.createElement('div');
-      wrapper.className = 'relative pl-8 sm:pl-32 py-6 group';
-      var abs1 = document.createElement('div');
-      abs1.className = 'absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition';
-      wrapper.appendChild(abs1);
-      var abs2 = document.createElement('div');
-      abs2.className = 'absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition';
-      wrapper.appendChild(abs2);
-      var card = document.createElement('div');
-      card.className = 'bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition';
-      var h3 = document.createElement('h3');
-      h3.className = 'text-xl font-bold text-green-400';
-      h3.textContent = role;
-      card.appendChild(h3);
-      var p1 = document.createElement('p');
-      p1.className = 'text-lg text-white';
-      p1.textContent = company;
-      card.appendChild(p1);
-      var p2 = document.createElement('p');
-      p2.className = 'text-sm text-gray-400';
-      p2.textContent = duration;
-      card.appendChild(p2);
-      var ul = document.createElement('ul');
-      ul.className = 'mt-2 text-gray-300 list-disc list-inside';
-      responsibilities.forEach(function(item) {
-        var li = document.createElement('li');
-        li.textContent = item;
-        ul.appendChild(li);
-      });
-      card.appendChild(ul);
-      wrapper.appendChild(card);
-      return wrapper;
-    }
-
-    // Render main content after loader
-    function renderPortfolio() {
-      var root = document.getElementById('root');
-      root.innerHTML = '';
-      var main = document.createElement('div');
-      main.className = 'flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white';
-      var h1 = document.createElement('h1');
-      h1.className = 'text-4xl font-bold mb-8';
-      h1.textContent = "Welcome to Harry's Portfolio";
-      main.appendChild(h1);
-      var container = document.createElement('div');
-      container.className = 'w-full max-w-4xl space-y-8';
-      // Skills
-      var h2skills = document.createElement('h2');
-      h2skills.className = 'text-2xl font-semibold mb-4 mt-8';
-      h2skills.textContent = 'Skills';
-      container.appendChild(h2skills);
-      var skillsGrid = document.createElement('div');
-      skillsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4';
-      [
-        ['React', 90],
-        ['Node.js', 80],
-        ['Docker', 75],
-        ['Kubernetes', 60],
-        ['CI/CD', 85],
-        ['AWS', 70]
-      ].forEach(function(skill) {
-        skillsGrid.appendChild(createGauge(skill[0], skill[1]));
-      });
-      container.appendChild(skillsGrid);
-      // Timeline
-      var h2exp = document.createElement('h2');
-      h2exp.className = 'text-2xl font-semibold mb-4 mt-8';
-      h2exp.textContent = 'Experience Timeline';
-      container.appendChild(h2exp);
-      container.appendChild(createTimelineNode(
-        'Tech Solutions Inc.',
-        'DevOps Engineer',
-        '2022 - Present',
-        ['Implemented CI/CD pipelines', 'Managed cloud infrastructure', 'Automated deployments']
-      ));
-      container.appendChild(createTimelineNode(
-        'Web Innovators',
-        'Frontend Developer',
-        '2020 - 2022',
-        ['Built React applications', 'Collaborated with designers', 'Optimized web performance']
-      ));
-      main.appendChild(container);
-      root.appendChild(main);
-    }
-
-    // After loader, render portfolio
-    setTimeout(renderPortfolio, 10000);
+              }
+              i++;
+              if (i > maxLen) clearInterval(interval);
+            }, 100);
+          }, 300);
+        }
+      }, 800);
+    });
   </script>
 </body>
 </html>

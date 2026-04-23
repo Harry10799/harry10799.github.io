@@ -1,432 +1,881 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harrys Portfolio</title>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    #loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.5s ease-out;
-    }
-    #loading-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    #root {
-      display: block;
-    }
-    .flying-dragon {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      z-index: 50;
-      pointer-events: none;
-      opacity: 0.8;
-      animation: fly linear infinite;
-    }
-    @keyframes fly {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      25% { transform: translate(50vw, 20vh) rotate(15deg); }
-      50% { transform: translate(80vw, 50vh) rotate(-15deg); }
-      75% { transform: translate(30vw, 80vh) rotate(10deg); }
-      100% { transform: translate(0, 100vh) rotate(0deg); }
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #1f2937;
-      padding: 20px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 500px;
-      color: white;
-      position: relative;
-      margin: 0;
-    }
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #94a3b8;
-    }
-    .close:hover {
-      color: #f472b6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harikumar's Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            background-attachment: fixed;
+            color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            font-size: 14px;
+            position: relative;
+
+        }
+
+
+        /* Top Menu Bar */
+        .menu-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: white;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            font-size: 13px;
+            color: black;
+        }
+        .apple-logo {
+            font-size: 16px;
+            margin-right: 16px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .menu-item { margin: 0 10px; cursor: pointer; }
+        .menu-item.brand { font-weight: 700; margin-left: 0; }
+        .menu-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 12px;
+        }
+        .menu-right .icon { opacity: 0.95; cursor: pointer; }
+
+        /* Hero center text */
+        .hero {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero .greeting {
+            font-size: 22px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+        .hero h1 {
+            font-size: 140px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.92);
+            line-height: 1;
+            letter-spacing: -3px;
+            margin: 0;
+        }
+        .hero .subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.75);
+            margin-top: 14px;
+        }
+
+        /* Desktop Icons - scattered across the hero */
+        .desktop {
+            position: absolute;
+            inset: 48px 24px 120px 24px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .desktop-icon {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 96px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            pointer-events: auto;
+        }
+        .desktop-icon.pos-1 { top: 4%;  left: 3%; }
+        .desktop-icon.pos-2 { top: 14%; right: 6%; }
+        .desktop-icon.pos-3 { bottom: 6%; left: 8%; }
+        .desktop-icon.pos-4 { bottom: 12%; right: 10%; }
+        .desktop-icon.pos-5 { top: 38%; left: 6%; }
+        .desktop-icon.pos-6 { top: 46%; right: 4%; }
+        .desktop-icon:hover { transform: scale(1.06); }
+        .folder-icon {
+            width: 64px;
+            height: 52px;
+            position: relative;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+        }
+        .folder-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 32px;
+            height: 10px;
+            background: linear-gradient(180deg, #6fc4ff, #4aa6e8);
+            border-radius: 4px 6px 0 0;
+        }
+        .folder-icon::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 0;
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(180deg, #7fd0ff, #4ba6e8);
+            border-radius: 4px 6px 6px 6px;
+        }
+        .desktop-icon span {
+            font-size: 12px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            line-height: 1.25;
+        }
+
+        /* Dock */
+        .dock {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: 24px;
+            padding: 16px 16px;
+            display: flex;
+            gap: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.25);
+            z-index: 2500;
+        }
+        .dock-item {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: url(pointinghand.svg), pointer;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            background: rgba(255,255,255,0.08);
+        }
+        .dock-item:hover {
+            transform: scale(1.3) translateY(-10px);
+        }
+        .dock-item[data-tip]:hover::before {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(40,40,40,0.95);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* Window */
+        .window {
+            position: fixed;
+            background: rgba(28, 28, 33, 0.96);
+            backdrop-filter: blur(30px);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 480px;
+            min-height: 320px;
+            resize: both;
+            z-index: 2000;
+        }
+        .window.active { display: flex; }
+
+        .window-header {
+            height: 36px;
+            background: rgba(40,40,45,0.6);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            cursor: grab;
+        }
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .control-btn {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+        .close { background: #ff5f57; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #28c840; }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        .window-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        h1.section-title { font-size: 28px; margin-bottom: 8px; }
+        h2 { font-size: 20px; margin: 20px 0 12px; color: #0a84ff; }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+        }
+        .skill-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .skill-card:hover {
+            background: rgba(10, 132, 255, 0.15);
+            border-color: #0a84ff;
+            transform: translateY(-4px);
+        }
+
+        .project-card {
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
+            transition: 0.3s;
+        }
+        .project-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.02);
+        }
+
+        .btn {
+            background: #0a84ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 110px; letter-spacing: -2px; }
+            .hero .greeting { font-size: 19px; }
+            .desktop-icon { width: 86px; }
+            .desktop-icon span { font-size: 11px; }
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+            body { font-size: 13px; overflow-y: auto; }
+
+            /* Menu bar – condense */
+            .menu-bar {
+                height: 28px;
+                padding: 0 10px;
+                font-size: 11px;
+                gap: 2px;
+            }
+            .apple-logo { margin-right: 6px; font-size: 14px; }
+            .menu-bar .menu-item:not(.brand) { display: none; }
+            .menu-item.brand { font-size: 12px; }
+            .menu-right { gap: 6px; font-size: 10px; }
+            .menu-right .icon { display: none; }
+            .menu-right #datetime { font-size: 10px; }
+
+            /* Hero – nicely centered, smaller */
+            .hero {
+                width: 92%;
+                top: 50%;
+            }
+            .hero .greeting { font-size: 13px; margin-bottom: 6px; }
+            .hero h1 { font-size: 58px; letter-spacing: -1.5px; }
+            .hero .subtitle { font-size: 12px; margin-top: 8px; }
+
+            /* Desktop icons – clean grid in upper area, no overlap with hero */
+            .desktop {
+                position: absolute;
+                inset: auto;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: auto;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 14px 18px;
+                padding: 12px 16px;
+                pointer-events: auto;
+            }
+            .desktop-icon,
+            .desktop-icon.pos-1,
+            .desktop-icon.pos-2,
+            .desktop-icon.pos-3,
+            .desktop-icon.pos-4,
+            .desktop-icon.pos-5,
+            .desktop-icon.pos-6 {
+                position: static;
+                top: auto; left: auto; right: auto; bottom: auto;
+                width: 78px;
+                gap: 4px;
+
+            }
+            .folder-icon { width: 52px; height: 42px; }
+            .folder-icon::before { width: 26px; height: 8px; }
+            .folder-icon::after { top: 5px; height: 37px; }
+            .desktop-icon span { font-size: 10.5px; line-height: 1.25; }
+
+            /* Dock – bigger, nicer (matches reference screenshot) */
+            .dock {
+                bottom: 14px;
+                padding: 8px 10px;
+                gap: 8px;
+                border-radius: 20px;
+                max-width: calc(100vw - 24px);
+            }
+            .dock-item {
+                width: 48px;
+                height: 48px;
+                border-radius: 12px;
+                font-size: 26px;
+                flex-shrink: 0;
+            }
+            .dock-item:hover { transform: scale(1.15) translateY(-6px); }
+
+            /* Windows – fullscreen-ish */
+            .window {
+                min-width: 0 !important;
+                min-height: 0 !important;
+                width: 94vw !important;
+                height: 78vh !important;
+                top: 40px !important;
+                left: 3vw !important;
+                resize: none;
+            }
+            .window-content { padding: 16px; font-size: 13px; }
+            h1.section-title { font-size: 22px; }
+            h2 { font-size: 17px; }
+            .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .skill-card { padding: 12px; }
+            .project-card { padding: 14px; }
+        }
+
+        /* Very small phones */
+        @media (max-width: 380px) {
+            .hero h1 { font-size: 46px; }
+            .hero .greeting { font-size: 12px; }
+            .desktop-icon,
+            .desktop-icon.pos-1,
+            .desktop-icon.pos-2,
+            .desktop-icon.pos-3,
+            .desktop-icon.pos-4,
+            .desktop-icon.pos-5,
+            .desktop-icon.pos-6 { width: 70px; }
+            .desktop-icon span { font-size: 9.5px; }
+            .dock-item { width: 42px; height: 42px; font-size: 22px; }
+        }
+    </style>
 </head>
 <body>
-  <div id="root">
-    <div class="min-h-screen w-full bg-gray-900 text-white font-mono relative overflow-x-hidden">
-      <!-- Top-left round icon -->
-      <img src="assets/image.png" alt="Profile Icon" class="fixed top-4 left-4 w-14 h-14 rounded-full shadow-lg border-2 border-green-400 bg-gray-800 object-cover z-50" style="background:#222;" loading="lazy" />
-      <div id="particles-js" class="absolute inset-0 z-0"></div>
-      <div class="relative z-10 w-full px-2 sm:px-4 py-4">
-        <header class="text-center py-8 flex flex-col items-center">
-          <h1 class="text-4xl sm:text-5xl font-bold hologram">
-            <span class="text-green-400">&gt; </span><span id="name-transition">ハリクマール・ペダコトラ</span>
-          </h1>
-          <p class="text-xl sm:text-2xl mt-2 text-gray-300 break-words max-w-full whitespace-normal">
-            <span class="block animate-type hologram w-full text-center">
-              DevOps Engineer
-              <span class="hidden sm:inline"> | Automation Enthusiast</span>
-            </span>
-          </p>
-          <button id="deploy-btn" class="mt-6 px-6 py-2 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition flex items-center justify-center gap-2" onclick="openModal()">Deploy a Message 🚀</button>
-          <p id="deploy-msg" class="mt-4 text-green-400 animate-pulse" style="display:none;">Message Sent!</p>
-        </header>
-        <section class="my-8">
-          <div class="flex justify-center items-center mb-2">
-            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-0 flex items-center gap-2">&gt; Skills Dashboard
-              <img src="assets/katana.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
-            </h2>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full">
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Docker</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Kubernetes</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">AWS</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Jenkins</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:75%"></div></div><p class="text-right text-green-400">75%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h2 class="text-lg font-bold text-white">Terraform</h2><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:70%"></div></div><p class="text-right text-green-400">70%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Python</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:80%"></div></div><p class="text-right text-green-400">80%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Bash Scripting</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:90%"></div></div><p class="text-right text-green-400">90%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">CI/CD</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Monitoring</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:85%"></div></div><p class="text-right text-green-400">85%</p></div>
-            <div class="p-4 bg-gray-800 rounded-lg min-w-0 box-border"><h3 class="text-lg font-bold text-white">Git</h3><div class="w-full bg-gray-700 rounded h-4 mt-2"><div class="bg-green-500 h-4 rounded" style="width:95%"></div></div><p class="text-right text-green-400">95%</p></div>
-          </div>
-        </section>
-        <section class="my-8">
-          <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2 flex items-center gap-2 justify-center">&gt; Experience Timeline
-            <img src="assets/katana-2.png" alt="Katana Icon" class="inline-block w-8 h-6 ml-2 align-middle" style="transform: rotate(-20deg);" loading="lazy" />
-          </h2>
-          <div class="relative">
-            <div class="relative pl-8 sm:pl-32 py-6 group">
-              <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-              <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
-              <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition">
-                <h3 class="text-xl font-bold text-green-400">DevOps Engineer - 2</h3>
-                <p class="text-lg text-white">CSG</p>
-                <p class="text-sm text-gray-400">August 2024 - Present</p>
-                <ul class="mt-2 text-gray-300 list-disc list-inside">
-                  <li>Managed Kubernetes clusters on TANZU(VMWARE) and AWS EKS for high-availability applications.</li>
-                  <li>Migrated Legacy build systems to modern enterprise solutions.</li>
-                  <li>Orchestrated Kubernetes clusters to deploy and manage containerized applications, ensuring high availability, scalability, and efficient resource utilisation. </li>
-                  <li>Provided technical guidance and support to team members, fostering a culture of continuous learning and innovation.</li>
-                  <li>Fluentbit integration for real-time log monitoring and alerting.</li>
-                  <li>Leveraged FLUX CD for GitOps-based continuous delivery, automating application deployment and ensuring consistency across multiple environments.</li>
-                  <li>Conducted regular system audits and implemented security best practices to ensure compliance with industry standards. </li>
-                  <li>Implemented monitoring solutions using Prometheus and Grafana to track system performance, collect metrics, and visualise data for effective decision-making. </li>
-                </ul>
-              </div>
-              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition">
-                <h3 class="text-xl font-bold text-green-400">DevOps Engineer - 1</h3>
-                <p class="text-lg text-white">CSG</p>
-                <p class="text-sm text-gray-400">April 2023 - August 2024</p>
-                <ul class="mt-2 text-gray-300 list-disc list-inside">
-                  <li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li>
-                  <li>Automated the validation process and created CVPS(Continous Validation Process)</li>
-                  <li>Collaborated with development and operations teams to streamline release cycles and improve deployment processes. </li>
-                  <li>Migrated Legacy build systems to modern enterprise solutions.</li>
-                  <li>Developed and deployed Selenuim based automation for Legacy GUI Applications</li>
-                  <li>Good Knowledge of creating users and restricting permissions to the jobs and giving access to the respective jobs by customising the permissions in Jenkins..</li>
-                  <li>Decreased the deployment time by 1 hr using Rundeck and automation scripts</li>
-                </ul>
-              </div>
-            </div>
-            <div class="relative pl-8 sm:pl-32 py-6 group">
-              <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-              <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
-              <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Associate Software Engineer</h3><p class="text-lg text-white">Rakuten</p><p class="text-sm text-gray-400">April 2022 - March 2023</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Deployed and monitored microservices on Docker Swarm.</li><li>Optimized AWS resource usage, reducing costs by 20%.</li><li>Integrated monitoring tools like Prometheus and Grafana.</li></ul></div>
-            </div>
-            <div class="relative pl-8 sm:pl-32 py-6 group">
-              <div class="absolute left-0 sm:left-20 top-0 bottom-0 w-1 bg-green-500 group-hover:bg-green-400 transition"></div>
-              <img src="assets/dragon.png" alt="Dragon Icon" class="absolute left-[-2.5rem] sm:left-[1.5rem] top-8 w-8 h-8 rounded-full bg-gray-900 border-2 border-green-500 shadow-md z-10" style="object-fit:contain;" loading="lazy" />
-              <div class="absolute left-[-0.5rem] sm:left-[4.5rem] top-8 w-4 h-4 bg-green-500 rounded-full group-hover:scale-125 transition"></div>
-              <div class="bg-gray-800 p-4 rounded-lg group-hover:shadow-lg group-hover:shadow-green-500/50 transition"><h3 class="text-xl font-bold text-green-400">Assistant Systems Engineer</h3><p class="text-lg text-white">Tata Consultancy Services</p><p class="text-sm text-gray-400">May 2021 - Feb 2022</p><ul class="mt-2 text-gray-300 list-disc list-inside"><li>Working with Production support team in solving issues in production environment.</li><li>Maintained Git repositories and automated build processes.</li><li>Assisted in migrating on-premises infrastructure to AWS.</li><li>Scripted automation tasks using Bash and Python.</li></ul></div>
-            </div>
-          </div>
-        </section>
-        <section class="my-8">
-          <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">&gt; Projects</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-            <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">CI/CD Pipeline with Jenkins</h3><p class="mt-2 text-gray-300">Automated build and deployment pipeline for a microservices architecture using Jenkins and Docker.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
-            <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Kubernetes Cluster Setup</h3><p class="mt-2 text-gray-300">Deployed a highly available Kubernetes cluster on AWS with auto-scaling and monitoring.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
-            <div class="p-6 bg-gray-800 rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition min-w-0 box-border"><h3 class="text-xl font-bold">Infrastructure as Code</h3><p class="mt-2 text-gray-300">Provisioned cloud infrastructure using Terraform for a scalable web application.</p><a href="#" class="mt-4 inline-block text-green-400 hover:underline">View Project</a></div>
-          </div>
-        </section>
-        <footer class="text-center py-6">
-          <img src="assets/katana.png" alt="Katana Watermark" class="fixed bottom-2 right-2 w-16 h-6 opacity-30 pointer-events-none select-none z-30" style="transform: rotate(15deg);" loading="lazy" />
-          <p class="text-gray-400">© 2025 ハリー | Built with ❤️<br><span class="block text-pink-300 mt-2" style="font-family: 'Noto Sans JP', sans-serif;">「継続は力なり」- Perseverance is power</span><br><span id="current-date-time" class="text-gray-500 mt-1"></span></p>
-        </footer>
-        <div id="contact-modal" class="modal">
-          <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div id="contact-form-root"></div>
-          </div>
+
+    <!-- Top Menu Bar -->
+    <div class="menu-bar">
+        <div class="apple-logo">
+            <img src="logo.svg" alt="Logo" style="width: 16px; height: 16px;">
         </div>
-      </div>
+        <div class="menu-item brand">Harikumar's Portfolio</div>
+        <div class="menu-item" onclick="openWindow('projects')">Projects</div>
+        <div class="menu-item" onclick="openWindow('contact')">Contact</div>
+        <div class="menu-item" onclick="openWindow('about')">Resume</div>
+        <div class="menu-right">
+            <img src="search.svg" alt="Search" style="width: 16px; height: 16px; cursor: pointer;">
+            <img src="wifi.svg" alt="WiFi" style="width: 16px; height: 16px; cursor: pointer;">
+            <img src="mode.svg" alt="Mode" style="width: 16px; height: 16px; cursor: pointer;">
+            <span id="datetime"></span>
+            <span>100% 🔋</span>
+        </div>
     </div>
-  </div>
-  <script type="text/babel">
-    // Modal control functions
-    window.openModal = function() {
-      const modal = document.getElementById('contact-modal');
-      if (modal) {
-        modal.style.display = 'flex';
-        ReactDOM.render(<ContactForm />, document.getElementById('contact-form-root'));
-      }
-    };
 
-    window.closeModal = function() {
-      const modal = document.getElementById('contact-modal');
-      if (modal) {
-        modal.style.display = 'none';
-        ReactDOM.unmountComponentAtNode(document.getElementById('contact-form-root'));
-      }
-    };
+    <!-- Hero Center Text -->
+    <div class="hero">
+        <div class="greeting">Hey, I'm Harikumar!</div>
+    </div>
 
-    // Deploy message function
-    window.showDeployMsg = function() {
-      const msg = document.getElementById('deploy-msg');
-      if (msg) {
-        msg.style.display = 'block';
-        setTimeout(() => { msg.style.display = 'none'; }, 3000);
-      }
-    };
-
-    // Name transition effect
-    setTimeout(() => {
-      const nameSpan = document.getElementById('name-transition');
-      if (nameSpan) {
-        const jp = 'ハリクマール・ペダコトラ';
-        const en = 'Harikumar Peddakotla';
-        const maxLen = Math.max(jp.length, en.length);
-        nameSpan.style.transition = 'opacity 0.3s';
-        nameSpan.style.opacity = 0;
-        setTimeout(() => {
-          nameSpan.style.opacity = 1;
-          nameSpan.innerHTML = '';
-          for (let k = 0; k < maxLen; k++) {
-            const span = document.createElement('span');
-            if (en[k] === ' ') {
-              span.textContent = jp[k] ? jp[k] : '\u00A0';
-            } else {
-              span.textContent = jp[k] ? jp[k] : '';
-            }
-            span.style.display = 'inline-block';
-            span.style.transition = 'opacity 0.3s, transform 0.3s';
-            span.style.fontFamily = 'inherit';
-            nameSpan.appendChild(span);
-          }
-          let i = 0;
-          const interval = setInterval(() => {
-            const spans = nameSpan.children;
-            if (i < maxLen) {
-              const s = spans[i];
-              if (s) {
-                s.style.opacity = 0;
-                s.style.transform = 'scale(1.5)';
-                setTimeout((span, idx) => {
-                  if (en[idx] === ' ') {
-                    span.textContent = '\u00A0';
-                  } else {
-                    span.textContent = en[idx] ? en[idx] : '';
-                  }
-                  span.style.opacity = 1;
-                  span.style.transform = 'scale(1)';
-                }, 200, s, i);
-              }
-            }
-            i++;
-            if (i > maxLen) clearInterval(interval);
-          }, 100);
-        }, 300);
-      }
-    }, 800);
-
-    // Flying dragon animation
-    // function createFlyingDragon() {
-    //   const dragon = document.createElement('img');
-    //   dragon.src = 'https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c529.png';
-    //   dragon.alt = 'Flying Dragon';
-    //   dragon.className = 'flying-dragon';
-    //   dragon.style.left = Math.random() * 90 + 'vw';
-    //   dragon.style.top = Math.random() * 50 + 'vh';
-    //   dragon.style.animationDuration = (5 + Math.random() * 5) + 's';
-    //   document.body.appendChild(dragon);
-    //   setTimeout(() => {
-    //     if (dragon.parentNode) {
-    //       dragon.remove();
-    //     }
-    //     setTimeout(createFlyingDragon, Math.random() * 2000 + 1000);
-    //   }, 5000 + Math.random() * 5000);
-    // }
-
-    // setTimeout(createFlyingDragon, 1000);
-
-    // Update date and time
-    function updateDateTime() {
-      const now = new Date();
-      const options = {
-        timeZone: 'Asia/Kolkata',
-        hour12: true,
-        hour: '2-digit',
-        minute: '2-digit',
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      };
-      const dateTimeString = now.toLocaleString('en-US', options).replace(' at', ',');
-      const dateTimeElement = document.getElementById('current-date-time');
-      if (dateTimeElement) {
-        dateTimeElement.textContent = dateTimeString;
-      }
-    }
-
-    updateDateTime();
-    setInterval(updateDateTime, 60000);
-
-    // ContactForm Component
-    function ContactForm() {
-      const [formData, setFormData] = React.useState({
-        name: "",
-        email: "",
-        message: "",
-        company: ""
-      });
-      const [isSubmitting, setIsSubmitting] = React.useState(false);
-
-      const handleSubmit = async (event) => {
-        event.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-          const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              access_key: "DUMMY", // Replace with your Web3Forms access key
-              ...formData
-            }),
-          });
-
-          const result = await response.json();
-          if (result.success) {
-            alert("Message sent successfully!");
-            setFormData({ name: "", email: "", message: "", company: "" });
-            closeModal();
-          } else {
-            alert("Failed to send message. Please try again.");
-          }
-        } catch (error) {
-          console.error("Submission error:", error);
-          alert("An error occurred. Please try again.");
-        } finally {
-          setIsSubmitting(false);
-        }
-      };
-
-      const handleChange = (e) => {
-        setFormData({
-          ...formData,
-          [e.target.name]: e.target.value
-        });
-      };
-
-      return (
-        <div style={{ maxWidth: "500px", margin: "0 auto", padding: "20px" }}>
-          <h2>Contact Me</h2>
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: "15px" }}>
-              <label htmlFor="name">Name:</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
-              />
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label htmlFor="email">Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
-              />
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label htmlFor="message">Message:</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows="5"
-                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
-              />
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label htmlFor="company">Company (Optional):</label>
-              <input
-                type="text"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                style={{ width: "100%", padding: "8px", marginTop: "5px", backgroundColor: "#2d3748", color: "#e2e8f0", border: "1px solid #4a5568" }}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              style={{
-                background: "#007bff",
-                color: "white",
-                padding: "10px 20px",
-                border: "none",
-                borderRadius: "4px",
-                cursor: isSubmitting ? "not-allowed" : "pointer"
-              }}
-            >
-              {isSubmitting ? "Sending..." : "Send Message"}
-            </button>
-          </form>
+    <!-- Desktop Icons -->
+    <div class="desktop">
+        <div class="desktop-icon pos-1" data-target="k8s">
+            <div class="folder-icon" ></div>
+            <span>K8s Cluster Automation</span>
         </div>
-      );
-    }
-  </script>
+        <div class="desktop-icon pos-4" data-target="cicd">
+            <div class="folder-icon"></div>
+            <span>CI/CD Pipeline</span>
+        </div>
+        <div class="desktop-icon pos-2" data-target="monitoring">
+            <div class="folder-icon"></div>
+            <span>Monitoring Dashboard</span>
+        </div>
+    </div>
+
+    <!-- Dock -->
+    <div class="dock">
+        <div class="dock-item" data-tip="Finder" onclick="openWindow('about')">
+            <img src="finder.png" style="width: 64px; height: 64px;" alt="Finder">
+        </div>
+        <div class="dock-item" data-tip="Contact" onclick="openWindow('contact')" style="background: linear-gradient(180deg,#e8f4ff,#a8d4ff);">
+            <img src="contact.png" style="width: 64px; height: 64px;" alt="Safari">
+        </div>
+        <div class="dock-item" data-tip="Experience" onclick="openWindow('experience')">
+            <div><img src="photos.png" alt="Experience" style="width: 64px; height: 64px;"></div>
+        </div>
+        <div class="dock-item" data-tip="Projects" onclick="openWindow('projects')" style="background: linear-gradient(180deg,#ffb84a,#e8842a);">🗂️</div>
+        <div class="dock-item" data-tip="Skills" onclick="openWindow('skills')">
+            <div><img src="trash.png" alt="Skills" style="width: 64px; height: 64px;"></div>
+        </div>
+    </div>
+
+    <!-- About Window -->
+    <div id="about-window" class="window" style="width: 620px; height: 480px; top: 90px; left: 200px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('about-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">About Me</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">Hi, I'm Harikumar 👋</h1>
+            <p>DevOps Engineer | Automation Enthusiast</p>
+            <p>I build scalable infrastructure and love automating things to make systems run smoothly at scale.</p>
+
+            <h2>Currently</h2>
+            <p>Working on Kubernetes clusters, CI/CD pipelines, and cloud-native automation.</p>
+
+            <button class="btn" onclick="alert('Resume coming soon!')">Download Resume</button>
+        </div>
+    </div>
+
+    <!-- Projects Window -->
+    <div id="projects-window" class="window" style="width: 720px; height: 520px; top: 80px; left: 280px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('projects-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">My Projects</div>
+        </div>
+        <div class="window-content">
+            <div class="project-card" onclick="openWindow('k8s')">
+                <h3>K8s Cluster Automation</h3>
+                <p>Automated multi-node Kubernetes cluster setup using Ansible + Terraform.</p>
+                <small style="color:#0a84ff;">Click to view details →</small>
+            </div>
+            <div class="project-card" onclick="openWindow('cicd')">
+                <h3>CI/CD Pipeline</h3>
+                <p>GitHub Actions + ArgoCD pipeline for zero-downtime deployments.</p>
+                <small style="color:#0a84ff;">Click to view details →</small>
+            </div>
+            <div class="project-card" onclick="openWindow('monitoring')">
+                <h3>Monitoring Dashboard</h3>
+                <p>Prometheus + Grafana + Loki setup for full observability.</p>
+                <small style="color:#0a84ff;">Click to view details →</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Window -->
+    <div id="skills-window" class="window" style="width: 680px; height: 460px; top: 120px; left: 240px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('skills-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">Skills & Tools</div>
+        </div>
+        <div class="window-content">
+            <div class="skills-grid">
+                <div class="skill-card"><strong>Containers</strong><br>Docker, Kubernetes, Helm</div>
+                <div class="skill-card"><strong>Cloud</strong><br>AWS</div>
+                <div class="skill-card"><strong>CI/CD</strong><br>Jenkins, Azure Pipelines, FluxCD</div>
+                <div class="skill-card"><strong>IaC</strong><br>Terraform, Chef</div>
+                <div class="skill-card"><strong>Scripting</strong><br>Python, Bash</div>
+                <div class="skill-card"><strong>Monitoring</strong><br>Prometheus, Grafana, ELK</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Window -->
+    <div id="experience-window" class="window" style="width: 700px; height: 500px; top: 100px; left: 260px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('experience-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">Experience</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">Work Experience</h1>
+            <p style="color:#aaa; margin-bottom:18px;">My journey so far in DevOps and automation</p>
+
+            <div class="project-card">
+                <h3>DevOps Engineer II</h3>
+                <p style="color:#0a84ff; margin:4px 0;">CSG International · 2024 – Present</p>
+                <ul style="margin-left:20px;">
+                    <li>Managed Kubernetes AWS EKS for high‑availability applications.</li>
+                    <li>Migrated legacy build systems to modern enterprise solutions.</li>
+                    <li>Orchestrated Kubernetes clusters to deploy and manage containerized applications, ensuring high availability, scalability, and efficient resource utilisation.</li>
+                    <li>Provided technical guidance and support to team members, fostering a culture of continuous learning and innovation.</li>
+                    <li>Fluentbit integration for real‑time log monitoring and alerting.</li>
+                    <li>Leveraged FLUX CD for GitOps‑based continuous delivery, automating application deployment and ensuring consistency across multiple environments.</li>
+                    <li>Conducted regular system audits and implemented security best practices to ensure compliance with industry standards.</li>
+                    <li>Implemented monitoring solutions using Prometheus and Grafana to track system performance, collect metrics, and visualise data for effective decision‑making.</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <h3>Devops Engineer I</h3>
+                <p style="color:#0a84ff; margin:4px 0;">CSG International · 2023 – 2024</p>
+                <ul style="margin-left:20px;">
+                    <li>Designed and implemented CI/CD pipelines using Rundeck and Chef</li>
+                    <li>Automated the validation process and created CVPS (Continuous Validation Process)</li>
+                    <li>Collaborated with development and operations teams to streamline release cycles and improve deployment processes.</li>
+                    <li>Migrated legacy build systems to modern enterprise solutions.</li>
+                    <li>Developed and deployed Selenium‑based automation for legacy GUI applications</li>
+                    <li>Good knowledge of creating users and restricting permissions to the jobs, giving access to respective jobs by customizing permissions in Jenkins.</li>
+                    <li>Decreased the deployment time by 1 hr using Rundeck and automation scripts</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <h3>Associate Software Engineer</h3>
+                <p style="color:#0a84ff; margin:4px 0;">Rakuten · 2022 – 2023</p>
+                <p>Maintained Linux servers, wrote Bash and Python automation scripts, and supported CI pipelines on Jenkins for application teams.</p>
+            </div>
+            <div class="project-card">
+                <h3>Assistant Systems Engineer</h3>
+                <p style="color:#0a84ff; margin:4px 0;">Tata Consultancy Services · 2021 – 2022</p>
+                <ul style="margin-left:20px;">
+                    <li>Working with Production support team in solving issues in production environment.</li>
+                    <li>Maintained Git repositories and automated build processes.</li>
+                    <li>Assisted in migrating on-premises infrastructure to AWS.</li>
+                    <li>Scripted automation tasks using Bash and Python.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Detail Windows -->
+    <div id="k8s-window" class="window" style="width: 600px; height: 420px; top: 100px; left: 260px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('k8s-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">K8s Cluster Automation</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">K8s Cluster Automation</h1>
+            <p><em>Infrastructure as Code</em></p>
+            <h2>Overview</h2>
+            <p>Automated provisioning of multi-node Kubernetes clusters from scratch — from VM bring-up to cluster bootstrap.</p>
+            <h2>Tech Stack</h2>
+            <p>Kubernetes · Terraform · Ansible · Helm</p>
+        </div>
+    </div>
+
+    <div id="cicd-window" class="window" style="width: 600px; height: 420px; top: 110px; left: 280px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('cicd-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">CI/CD Pipeline</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">CI/CD Pipeline</h1>
+            <p><em>Zero-Downtime Deployments</em></p>
+            <h2>Overview</h2>
+            <p>End-to-end pipeline that builds, tests and ships containers to production with GitOps and progressive delivery.</p>
+            <h2>Tech Stack</h2>
+            <p>GitHub Actions · ArgoCD · Docker · Kubernetes</p>
+        </div>
+    </div>
+
+    <div id="monitoring-window" class="window" style="width: 600px; height: 420px; top: 120px; left: 300px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('monitoring-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">Monitoring Dashboard</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">Monitoring Dashboard</h1>
+            <p><em>Full-Stack Observability</em></p>
+            <h2>Overview</h2>
+            <p>Centralised metrics, logs and alerts for cloud-native workloads with rich dashboards and SLO tracking.</p>
+            <h2>Tech Stack</h2>
+            <p>Prometheus · Grafana · Loki · Alertmanager</p>
+        </div>
+    </div>
+
+    <!-- Contact Window -->
+    <div id="contact-window" class="window" style="width: 520px; height: 380px; top: 140px; left: 360px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('contact-window')"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+            </div>
+            <div class="window-title">Get in Touch</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">Let's Connect</h1>
+            <p>🐙 github.com/Harry10799</p>
+            <p style="margin-top:14px;">Have an idea or want to collaborate? Let's connect and build something awesome!</p>
+        </div>
+    </div>
+
+    <script>
+        // Date + Time in menu bar
+        function updateDateTime() {
+            const el = document.getElementById('datetime');
+            const fmt = () => {
+                const now = new Date();
+                const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                const day = days[now.getDay()];
+                const date = now.getDate();
+                const month = months[now.getMonth()];
+                const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                el.textContent = `${day} ${date} ${month} ${time}`;
+            };
+            fmt();
+            setInterval(fmt, 1000);
+        }
+        updateDateTime();
+
+        let topZ = 2000;
+        function openWindow(id) {
+            const w = document.getElementById(id + '-window');
+            if (!w) return;
+            w.classList.add('active');
+            topZ++;
+            w.style.zIndex = topZ;
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Drag
+        let dragElement = null;
+        let offsetX, offsetY;
+
+        function dragStart(e, el) {
+            dragElement = el;
+            offsetX = e.clientX - el.offsetLeft;
+            offsetY = e.clientY - el.offsetTop;
+            topZ++;
+            el.style.zIndex = topZ;
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+        }
+
+        function dragMove(e) {
+            if (dragElement) {
+                dragElement.style.left = (e.clientX - offsetX) + 'px';
+                dragElement.style.top = (e.clientY - offsetY) + 'px';
+            }
+        }
+
+        function dragEnd() {
+            dragElement = null;
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', dragEnd);
+        }
+
+        /* ---- Desktop folder drag + click/dblclick/tap to open ---- */
+        (function setupIconDrag() {
+            const icons = document.querySelectorAll('.desktop-icon');
+            const STORAGE_KEY = 'desktop-icon-positions';
+            const isMobile = () => window.innerWidth <= 700;
+
+            // Restore saved positions ONLY on non-mobile (mobile uses responsive grid)
+            function restorePositions() {
+                if (isMobile()) return;
+                try {
+                    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                    icons.forEach((ic, i) => {
+                        const key = ic.dataset.key || `icon-${i}`;
+                        ic.dataset.key = key;
+                        if (saved[key]) {
+                            ic.style.position = 'absolute';
+                            ic.style.left = saved[key].left + 'px';
+                            ic.style.top = saved[key].top + 'px';
+                            ic.style.right = 'auto';
+                            ic.style.bottom = 'auto';
+                        }
+                    });
+                } catch (e) {}
+            }
+
+            // Clear inline positions when entering mobile so flex grid takes over
+            function resetInlineForMobile() {
+                if (!isMobile()) return;
+                icons.forEach((ic) => {
+                    ic.style.position = '';
+                    ic.style.left = '';
+                    ic.style.top = '';
+                    ic.style.right = '';
+                    ic.style.bottom = '';
+                    ic.style.zIndex = '';
+                });
+            }
+
+            restorePositions();
+            resetInlineForMobile();
+            window.addEventListener('resize', () => {
+                resetInlineForMobile();
+                restorePositions();
+            });
+
+            icons.forEach((icon, i) => {
+                if (!icon.dataset.key) icon.dataset.key = `icon-${i}`;
+
+                let startX, startY, origLeft, origTop, moved = false, activePointer = null;
+                let lastTapTime = 0;
+
+                const onDown = (e) => {
+                    const point = e.touches ? e.touches[0] : e;
+                    activePointer = e.touches ? 'touch' : 'mouse';
+                    moved = false;
+                    startX = point.clientX;
+                    startY = point.clientY;
+
+                    if (activePointer === 'mouse') {
+                        document.addEventListener('mousemove', onMove);
+                        document.addEventListener('mouseup', onUp);
+                    } else {
+                        document.addEventListener('touchmove', onMove, { passive: false });
+                        document.addEventListener('touchend', onUp);
+                    }
+                };
+
+                const onMove = (e) => {
+                    const point = e.touches ? e.touches[0] : e;
+                    const dx = point.clientX - startX;
+                    const dy = point.clientY - startY;
+                    const dist = Math.abs(dx) + Math.abs(dy);
+
+                    if (!moved && dist > 5 && !isMobile()) {
+                        // Begin drag — convert to absolute pixel positioning now
+                        const rect = icon.getBoundingClientRect();
+                        icon.style.position = 'absolute';
+                        icon.style.left = rect.left + 'px';
+                        icon.style.top = rect.top + 'px';
+                        icon.style.right = 'auto';
+                        icon.style.bottom = 'auto';
+                        icon.style.zIndex = 50;
+                        origLeft = rect.left;
+                        origTop = rect.top;
+                        moved = true;
+                    }
+
+                    if (moved && !isMobile()) {
+                        if (e.cancelable) e.preventDefault();
+                        const w = icon.offsetWidth;
+                        const h = icon.offsetHeight;
+                        const newLeft = Math.min(window.innerWidth - w, Math.max(0, origLeft + dx));
+                        const newTop = Math.min(window.innerHeight - h - 70, Math.max(30, origTop + dy));
+                        icon.style.left = newLeft + 'px';
+                        icon.style.top = newTop + 'px';
+                    }
+                };
+
+                const onUp = () => {
+                    if (activePointer === 'mouse') {
+                        document.removeEventListener('mousemove', onMove);
+                        document.removeEventListener('mouseup', onUp);
+                    } else {
+                        document.removeEventListener('touchmove', onMove);
+                        document.removeEventListener('touchend', onUp);
+                    }
+
+                    if (moved && !isMobile()) {
+                        try {
+                            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                            saved[icon.dataset.key] = {
+                                left: parseInt(icon.style.left, 10),
+                                top: parseInt(icon.style.top, 10)
+                            };
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+                        } catch (e) {}
+                    } else if (!moved && (activePointer === 'touch' || isMobile())) {
+                        // Mobile single tap opens
+                        const target = icon.dataset.target;
+                        if (target) openWindow(target);
+                    }
+                    activePointer = null;
+                };
+
+                icon.addEventListener('mousedown', onDown);
+                icon.addEventListener('touchstart', onDown, { passive: true });
+
+                // Desktop: native double-click opens the project
+                icon.addEventListener('dblclick', () => {
+                    const target = icon.dataset.target;
+                    if (target) openWindow(target);
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

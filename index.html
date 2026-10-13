@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harikumar's Portfolio</title>
+    <title>Harikumar · DevOps Engineer</title>
+    <meta name="description" content="Harikumar — DevOps Engineer. AWS, Kubernetes/EKS, Terraform, GitOps, CI/CD and observability. Building scalable, automated infrastructure.">
+    <meta property="og:title" content="Harikumar · DevOps Engineer">
+    <meta property="og:description" content="AWS · EKS · Terraform · GitOps · CI/CD · Observability">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -23,6 +28,42 @@
 
         }
 
+        /* Animated aurora background */
+        .bg-aurora {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .bg-aurora .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(110px);
+        }
+        .blob.b1 {
+            width: 55vw; height: 55vw;
+            background: radial-gradient(circle, #ff9900, transparent 62%);
+            opacity: 0.16;
+            top: -22vw; right: -14vw;
+            animation: drift1 26s ease-in-out infinite alternate;
+        }
+        .blob.b2 {
+            width: 52vw; height: 52vw;
+            background: radial-gradient(circle, #0a84ff, transparent 62%);
+            opacity: 0.18;
+            bottom: -20vw; left: -14vw;
+            animation: drift2 32s ease-in-out infinite alternate;
+        }
+        .blob.b3 {
+            width: 34vw; height: 34vw;
+            background: radial-gradient(circle, #bf5af2, transparent 62%);
+            opacity: 0.09;
+            top: 38%; left: 34%;
+            animation: drift1 38s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes drift1 { to { transform: translate(-6vw, 8vh) scale(1.14); } }
+        @keyframes drift2 { to { transform: translate(7vw, -7vh) scale(1.10); } }
 
         /* Top Menu Bar */
         .menu-bar {
@@ -76,7 +117,7 @@
             letter-spacing: 0.2px;
         }
         .hero h1 {
-            font-size: 140px;
+            font-size: 112px;
             font-weight: 700;
             color: rgba(255,255,255,0.92);
             line-height: 1;
@@ -87,7 +128,18 @@
             font-size: 16px;
             color: rgba(255,255,255,0.75);
             margin-top: 14px;
+            min-height: 22px;
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
         }
+        .hero .typed-cursor {
+            display: inline-block;
+            width: 9px; height: 17px;
+            background: #ff9900;
+            margin-left: 3px;
+            vertical-align: -2px;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
 
         /* Desktop Icons - scattered across the hero */
         .desktop {
@@ -211,7 +263,26 @@
             resize: both;
             z-index: 2000;
         }
-        .window.active { display: flex; }
+        .window.active {
+            display: flex;
+            animation: winIn 0.16s ease-out;
+        }
+        @keyframes winIn {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+        }
+        .window.maximized {
+            top: 34px !important;
+            left: 12px !important;
+            width: calc(100vw - 24px) !important;
+            height: calc(100vh - 46px) !important;
+            resize: none;
+        }
+        .window.minimizing {
+            animation: winOut 0.28s ease-in forwards;
+        }
+        @keyframes winOut {
+            to { opacity: 0; transform: scale(0.15) translateY(55vh); }
+        }
 
         .window-header {
             height: 36px;
@@ -254,6 +325,10 @@
 
         h1.section-title { font-size: 28px; margin-bottom: 8px; }
         h2 { font-size: 20px; margin: 20px 0 12px; color: #0a84ff; }
+        h2.orange { color: #ff9900; }
+        .muted { color: #9a9aa0; }
+        .detail-list { margin: 6px 0 0 18px; }
+        .detail-list li { margin: 5px 0; color: #d8d8dc; }
 
         .skills-grid {
             display: grid;
@@ -276,6 +351,7 @@
 
         .project-card {
             background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             padding: 18px;
             margin-bottom: 16px;
@@ -285,6 +361,54 @@
             background: rgba(255,255,255,0.1);
             transform: scale(1.02);
         }
+        .project-card.clickable { cursor: pointer; }
+        .project-card h3 { font-size: 16px; margin-bottom: 4px; }
+
+        /* Tech chips */
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        .chip {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.14);
+            color: #cfcfcf;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+        .chip.aws {
+            background: rgba(255,149,0,0.12);
+            border-color: rgba(255,149,0,0.4);
+            color: #ffb340;
+        }
+
+        /* Architecture flow diagram */
+        .flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-size: 12px;
+            margin: 10px 0 4px;
+        }
+        .flow .node {
+            background: rgba(10,132,255,0.16);
+            border: 1px solid rgba(10,132,255,0.4);
+            color: #7cc0ff;
+            padding: 4px 9px;
+            border-radius: 7px;
+            white-space: nowrap;
+        }
+        .flow .node.aws {
+            background: rgba(255,149,0,0.12);
+            border-color: rgba(255,149,0,0.45);
+            color: #ffb340;
+        }
+        .flow .arrow { color: #777; }
 
         .btn {
             background: #0a84ff;
@@ -295,11 +419,87 @@
             font-size: 13px;
             cursor: pointer;
             margin-top: 12px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn:hover { filter: brightness(1.15); }
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+        .btn.aws-btn { background: #ff9900; color: #1a1a1a; }
+        .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        /* Terminal window */
+        #terminal-window .window-content { padding: 0; position: relative; }
+        .term-body {
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-size: 12.5px;
+            background: #0c0c10;
+            color: #d6d6d6;
+            padding: 14px;
+            height: 100%;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            user-select: text;
+        }
+        .term-body .p { color: #28c840; font-weight: 600; }
+        .term-body .c { color: #5eb0ff; }
+        .term-body .o { color: #b9b9bf; }
+        .term-cursor {
+            display: inline-block;
+            width: 8px; height: 14px;
+            background: #28c840;
+            vertical-align: -2px;
+            animation: blink 1s step-end infinite;
+        }
+        .term-input {
+            position: absolute;
+            opacity: 0;
+            width: 1px; height: 1px;
+            border: 0; padding: 0;
+            left: 0; bottom: 0;
+        }
+        .term-body .hint { color: #6f6f75; margin-top: 6px; }
+
+        /* Live monitoring dashboard (simulated) */
+        #dash-window .window-content { padding: 16px; }
+        .dash { display: flex; flex-direction: column; gap: 12px; }
+        .dash-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .pill { font-size: 11px; padding: 4px 12px; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+        .pill.ok { color: #28c840; border-color: rgba(40,200,64,0.4); background: rgba(40,200,64,0.08); animation: pulse 2s ease-in-out infinite; }
+        .pill.sim { color: #ffb340; border-color: rgba(255,149,0,0.4); background: rgba(255,149,0,0.08); }
+        @keyframes pulse { 50% { opacity: 0.6; } }
+        .dash-clock { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #9a9aa0; }
+        .dash-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; }
+        .stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 12px; }
+        .stat-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; color: #8b8b91; display: block; }
+        .stat-val { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; display: block; }
+        .stat-val.ok { color: #29cc6a; }
+        .stat-val.warn { color: #ffb340; }
+        .stat-sub { font-size: 10.5px; color: #77777d; display: block; margin-top: 2px; }
+        .dash-chart { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 12px; }
+        .dash-chart-title { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: #9a9aa0; margin-bottom: 6px; gap: 8px; flex-wrap: wrap; }
+        .legend { font-size: 10.5px; white-space: nowrap; }
+        .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 3px; }
+        .dot.g { background: #29cc6a; }
+        .dot.o { background: #ff9900; }
+        #dash-canvas { width: 100%; height: 150px; display: block; }
+        .dash-log { list-style: none; margin: 0; padding: 0 4px; overflow-y: auto; max-height: 110px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; }
+        .dash-log li { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 10px; }
+        .dash-log .t { color: #77777d; flex-shrink: 0; }
+        .dash-log li.ok .m { color: #7ee08a; }
+        .dash-log li.warn .m { color: #ffb340; }
+        .dash-log li.info .m { color: #7cc0ff; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bg-aurora .blob, .hero .typed-cursor, .term-cursor, .pill.ok { animation: none; }
         }
 
         /* Tablet */
         @media (max-width: 1024px) {
-            .hero h1 { font-size: 110px; letter-spacing: -2px; }
+            .hero h1 { font-size: 94px; letter-spacing: -2px; }
             .hero .greeting { font-size: 19px; }
             .desktop-icon { width: 86px; }
             .desktop-icon span { font-size: 11px; }
@@ -329,7 +529,7 @@
                 top: 50%;
             }
             .hero .greeting { font-size: 13px; margin-bottom: 6px; }
-            .hero h1 { font-size: 58px; letter-spacing: -1.5px; }
+            .hero h1 { font-size: 52px; letter-spacing: -1.5px; }
             .hero .subtitle { font-size: 12px; margin-top: 8px; }
 
             /* Desktop icons – clean grid in upper area, no overlap with hero */
@@ -400,11 +600,15 @@
             .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .skill-card { padding: 12px; }
             .project-card { padding: 14px; }
+            .flow { font-size: 11px; padding: 10px; }
+            .dock-item.hide-mobile { display: none; }
+            .stat-val { font-size: 18px; }
+            #dash-canvas { height: 120px; }
         }
 
         /* Very small phones */
         @media (max-width: 380px) {
-            .hero h1 { font-size: 46px; }
+            .hero h1 { font-size: 42px; }
             .hero .greeting { font-size: 12px; }
             .desktop-icon,
             .desktop-icon.pos-1,
@@ -420,6 +624,13 @@
 </head>
 <body>
 
+    <!-- Animated background -->
+    <div class="bg-aurora">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
     <!-- Top Menu Bar -->
     <div class="menu-bar">
         <div class="apple-logo">
@@ -427,6 +638,7 @@
         </div>
         <div class="menu-item brand">Harikumar's Portfolio</div>
         <div class="menu-item" onclick="openWindow('projects')">Projects</div>
+        <div class="menu-item" onclick="openWindow('skills')">Skills</div>
         <div class="menu-item" onclick="openWindow('contact')">Contact</div>
         <div class="menu-item" onclick="openWindow('about')">Resume</div>
         <div class="menu-right">
@@ -440,14 +652,20 @@
 
     <!-- Hero Center Text -->
     <div class="hero">
-        <div class="greeting">Hey, I'm Harikumar!</div>
+        <div class="greeting">Hey, I'm</div>
+        <h1>Harikumar</h1>
+        <div class="subtitle"><span id="typed"></span><span class="typed-cursor"></span></div>
     </div>
 
     <!-- Desktop Icons -->
     <div class="desktop">
-        <div class="desktop-icon pos-1" data-target="k8s">
-            <div class="folder-icon" ></div>
-            <span>K8s Cluster Automation</span>
+        <div class="desktop-icon pos-1" data-target="eks">
+            <div class="folder-icon"></div>
+            <span>EKS Automation &amp; Upgrades</span>
+        </div>
+        <div class="desktop-icon pos-3" data-target="threetier">
+            <div class="folder-icon"></div>
+            <span>3-Tier Architecture on AWS</span>
         </div>
         <div class="desktop-icon pos-4" data-target="cicd">
             <div class="folder-icon"></div>
@@ -457,6 +675,10 @@
             <div class="folder-icon"></div>
             <span>Monitoring Dashboard</span>
         </div>
+        <div class="desktop-icon pos-5" data-target="k8s">
+            <div class="folder-icon"></div>
+            <span>K8s Cluster Automation</span>
+        </div>
     </div>
 
     <!-- Dock -->
@@ -464,87 +686,128 @@
         <div class="dock-item" data-tip="Finder" onclick="openWindow('about')">
             <img src="finder.png" style="width: 64px; height: 64px;" alt="Finder">
         </div>
-        <div class="dock-item" data-tip="Contact" onclick="openWindow('contact')" style="background: linear-gradient(180deg,#e8f4ff,#a8d4ff);">
-            <img src="contact.png" style="width: 64px; height: 64px;" alt="Safari">
-        </div>
         <div class="dock-item" data-tip="Experience" onclick="openWindow('experience')">
             <div><img src="photos.png" alt="Experience" style="width: 64px; height: 64px;"></div>
         </div>
         <div class="dock-item" data-tip="Projects" onclick="openWindow('projects')" style="background: linear-gradient(180deg,#ffb84a,#e8842a);">🗂️</div>
-        <div class="dock-item" data-tip="Skills" onclick="openWindow('skills')">
-            <div><img src="trash.png" alt="Skills" style="width: 64px; height: 64px;"></div>
+        <div class="dock-item" data-tip="Skills" onclick="openWindow('skills')" style="background: linear-gradient(180deg,#6fc4ff,#2d7dd2);">🧰</div>
+        <div class="dock-item hide-mobile" data-tip="Live Dashboard" onclick="openWindow('dash')" style="background: linear-gradient(180deg,#2b2b30,#141418);">📊</div>
+        <div class="dock-item" data-tip="Terminal" onclick="openWindow('terminal')" style="background: linear-gradient(180deg,#3a3a3f,#1c1c20);">
+            <img src="terminal.png" alt="Terminal" style="width: 34px; height: 34px;">
+        </div>
+        <div class="dock-item" data-tip="Contact" onclick="openWindow('contact')" style="background: linear-gradient(180deg,#e8f4ff,#a8d4ff);">
+            <img src="contact.png" style="width: 64px; height: 64px;" alt="Safari">
         </div>
     </div>
 
     <!-- About Window -->
-    <div id="about-window" class="window" style="width: 620px; height: 480px; top: 90px; left: 200px;">
+    <div id="about-window" class="window" style="width: 640px; height: 520px; top: 90px; left: 200px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('about-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">About Me</div>
         </div>
         <div class="window-content">
             <h1 class="section-title">Hi, I'm Harikumar 👋</h1>
-            <p>DevOps Engineer | Automation Enthusiast</p>
-            <p>I build scalable infrastructure and love automating things to make systems run smoothly at scale.</p>
+            <p style="color:#0a84ff; margin: 2px 0 10px;">DevOps Engineer - 2 @ CSG International</p>
+            <p>I design, automate and run cloud infrastructure — mostly on AWS. My day-to-day is Kubernetes/EKS, Terraform, GitOps and observability, and I care deeply about systems that heal themselves and pipelines nobody has to babysit.</p>
+
+            <h2>What I work on</h2>
+            <div class="skills-grid">
+                <div class="skill-card"><strong>☁️ AWS</strong><br>EKS · EC2 · VPC · RDS · IAM</div>
+                <div class="skill-card"><strong>🌀 Kubernetes</strong><br>EKS · Helm · upgrades at scale</div>
+                <div class="skill-card"><strong>🔁 GitOps &amp; CI/CD</strong><br>FluxCD · Jenkins · ArgoCD</div>
+                <div class="skill-card"><strong>📈 Observability</strong><br>Prometheus · Grafana · Loki</div>
+            </div>
 
             <h2>Currently</h2>
-            <p>Working on Kubernetes clusters, CI/CD pipelines, and cloud-native automation.</p>
+            <p>Running production EKS clusters, driving zero-downtime Kubernetes upgrades, and pushing everything through Infrastructure-as-Code and GitOps.</p>
 
-            <button class="btn" onclick="alert('Resume coming soon!')">Download Resume</button>
+            <div class="btn-row" style="margin-top:16px;">
+                <a class="btn" href="https://github.com/Harry10799" target="_blank" rel="noopener">🐙 GitHub Profile</a>
+                <button class="btn ghost" onclick="alert('Resume coming soon!')">📄 Download Resume</button>
+            </div>
         </div>
     </div>
 
     <!-- Projects Window -->
-    <div id="projects-window" class="window" style="width: 720px; height: 520px; top: 80px; left: 280px;">
+    <div id="projects-window" class="window" style="width: 760px; height: 560px; top: 80px; left: 280px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('projects-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">My Projects</div>
         </div>
         <div class="window-content">
-            <div class="project-card" onclick="openWindow('k8s')">
+            <div class="project-card clickable" onclick="openWindow('threetier')">
+                <h3>Highly Scalable 3-Tier Architecture on AWS</h3>
+                <p>Multi-AZ web architecture — ALB → auto-scaling app tier → Multi-AZ RDS, fully defined in Terraform. Self-healing and horizontally scalable.</p>
+                <div class="chips">
+                    <span class="chip aws">AWS</span><span class="chip">Terraform</span><span class="chip">ALB</span><span class="chip">Auto Scaling</span><span class="chip">RDS Multi-AZ</span><span class="chip">ElastiCache</span>
+                </div>
+                <small style="color:#0a84ff;">Click to view details →</small>
+            </div>
+            <div class="project-card clickable" onclick="openWindow('eks')">
+                <h3>EKS Cluster Automation &amp; Zero-Downtime Upgrades</h3>
+                <p>Terraform-provisioned EKS platform with Karpenter, IRSA and GitOps-managed add-ons — plus a blue/green node rotation strategy for upgrades with zero customer impact.</p>
+                <div class="chips">
+                    <span class="chip aws">EKS</span><span class="chip">Terraform</span><span class="chip">Karpenter</span><span class="chip">FluxCD</span><span class="chip">IRSA</span><span class="chip">Helm</span>
+                </div>
+                <small style="color:#0a84ff;">Click to view details →</small>
+            </div>
+            <div class="project-card clickable" onclick="openWindow('k8s')">
                 <h3>K8s Cluster Automation</h3>
-                <p>Automated multi-node Kubernetes cluster setup using Ansible + Terraform.</p>
+                <p>Multi-node HA Kubernetes built from scratch — Terraform for infra, Ansible for kubeadm bootstrap. One command from zero to a running cluster.</p>
+                <div class="chips">
+                    <span class="chip">Kubeadm</span><span class="chip">Ansible</span><span class="chip">Terraform</span><span class="chip">HA etcd</span><span class="chip">Calico</span>
+                </div>
                 <small style="color:#0a84ff;">Click to view details →</small>
             </div>
-            <div class="project-card" onclick="openWindow('cicd')">
+            <div class="project-card clickable" onclick="openWindow('cicd')">
                 <h3>CI/CD Pipeline</h3>
-                <p>GitHub Actions + ArgoCD pipeline for zero-downtime deployments.</p>
+                <p>GitHub Actions → ECR → GitOps sync → canary rollout. Scanned images, immutable tags, progressive delivery and auto-rollback.</p>
+                <div class="chips">
+                    <span class="chip">GitHub Actions</span><span class="chip">ArgoCD</span><span class="chip">Docker</span><span class="chip">ECR</span><span class="chip">Trivy</span>
+                </div>
                 <small style="color:#0a84ff;">Click to view details →</small>
             </div>
-            <div class="project-card" onclick="openWindow('monitoring')">
+            <div class="project-card clickable" onclick="openWindow('monitoring')">
                 <h3>Monitoring Dashboard</h3>
-                <p>Prometheus + Grafana + Loki setup for full observability.</p>
+                <p>Prometheus + Grafana + Loki stack — metrics, logs and alerting with SLO tracking for cloud-native workloads.</p>
+                <div class="chips">
+                    <span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Loki</span><span class="chip">Alertmanager</span>
+                </div>
                 <small style="color:#0a84ff;">Click to view details →</small>
             </div>
         </div>
     </div>
 
     <!-- Skills Window -->
-    <div id="skills-window" class="window" style="width: 680px; height: 460px; top: 120px; left: 240px;">
+    <div id="skills-window" class="window" style="width: 700px; height: 500px; top: 120px; left: 240px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('skills-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
-            <div class="window-title">Skills & Tools</div>
+            <div class="window-title">Skills &amp; Tools</div>
         </div>
         <div class="window-content">
+            <h1 class="section-title">Skills &amp; Tools</h1>
+            <p class="muted" style="margin-bottom:16px;">The stack I use to build, ship and run infrastructure.</p>
             <div class="skills-grid">
-                <div class="skill-card"><strong>Containers</strong><br>Docker, Kubernetes, Helm</div>
-                <div class="skill-card"><strong>Cloud</strong><br>AWS</div>
-                <div class="skill-card"><strong>CI/CD</strong><br>Jenkins, Azure Pipelines, FluxCD</div>
-                <div class="skill-card"><strong>IaC</strong><br>Terraform, Chef</div>
-                <div class="skill-card"><strong>Scripting</strong><br>Python, Bash</div>
-                <div class="skill-card"><strong>Monitoring</strong><br>Prometheus, Grafana, ELK</div>
+                <div class="skill-card"><strong>☁️ AWS</strong><br>EKS · EC2 · VPC · RDS · S3 · IAM · CloudWatch · ECR · Route 53 · ElastiCache · Secrets Manager</div>
+                <div class="skill-card"><strong>📦 Containers</strong><br>Docker · Kubernetes · Helm · EKS</div>
+                <div class="skill-card"><strong>🔁 CI/CD &amp; GitOps</strong><br>Jenkins · GitHub Actions · Azure Pipelines · FluxCD · ArgoCD · Rundeck</div>
+                <div class="skill-card"><strong>🏗️ IaC</strong><br>Terraform · Ansible · Chef</div>
+                <div class="skill-card"><strong>📜 Scripting</strong><br>Python · Bash · YAML</div>
+                <div class="skill-card"><strong>📈 Monitoring</strong><br>Prometheus · Grafana · Loki · ELK · Fluent Bit</div>
+                <div class="skill-card"><strong>🐧 Linux &amp; Git</strong><br>RHEL · Ubuntu · Git · GitHub</div>
             </div>
         </div>
     </div>
@@ -554,8 +817,8 @@
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('experience-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">Experience</div>
         </div>
@@ -564,7 +827,7 @@
             <p style="color:#aaa; margin-bottom:18px;">My journey so far in DevOps and automation</p>
 
             <div class="project-card">
-                <h3>DevOps Engineer II</h3>
+                <h3>DevOps Engineer - 2</h3>
                 <p style="color:#0a84ff; margin:4px 0;">CSG International · 2024 – Present</p>
                 <ul style="margin-left:20px;">
                     <li>Managed Kubernetes AWS EKS for high‑availability applications.</li>
@@ -610,78 +873,257 @@
         </div>
     </div>
 
-    <!-- Project Detail Windows -->
-    <div id="k8s-window" class="window" style="width: 600px; height: 420px; top: 100px; left: 260px;">
+    <!-- Project Detail: 3-Tier AWS Architecture -->
+    <div id="threetier-window" class="window" style="width: 680px; height: 560px; top: 90px; left: 240px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('threetier-window')"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
+            </div>
+            <div class="window-title">3-Tier Architecture on AWS</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">Highly Scalable 3-Tier Architecture</h1>
+            <p class="muted"><em>Multi-AZ · self-healing · 100% Infrastructure-as-Code</em></p>
+
+            <h2 class="orange">Architecture</h2>
+            <div class="flow">
+                <span class="node">Route 53</span><span class="arrow">→</span>
+                <span class="node">CloudFront</span><span class="arrow">→</span>
+                <span class="node">ALB · public subnets</span><span class="arrow">→</span>
+                <span class="node">EC2 Auto Scaling · private subnets</span><span class="arrow">→</span>
+                <span class="node">RDS Multi-AZ + ElastiCache · isolated subnets</span>
+            </div>
+
+            <h2 class="orange">Key highlights</h2>
+            <ul class="detail-list">
+                <li><strong>Multi-AZ VPC:</strong> public, private and isolated subnets across 2 AZs — NAT gateways for egress, no direct internet path to the app or data tier.</li>
+                <li><strong>Stateless app tier:</strong> sessions cached in ElastiCache Redis, so the Auto Scaling group can scale out/in on CPU and ALB request-count-per-target without dropping users.</li>
+                <li><strong>Resilient data tier:</strong> RDS MySQL Multi-AZ with automatic failover; automated snapshots + PITR for recovery.</li>
+                <li><strong>Security by default:</strong> least-privilege security groups (ALB → app → DB only), IAM instance profiles, SSM Session Manager instead of a bastion, credentials in Secrets Manager.</li>
+                <li><strong>Self-healing:</strong> ALB health checks + CloudWatch alarms replace unhealthy instances automatically; launch template pulls the latest hardened AMI.</li>
+                <li><strong>Everything as code:</strong> modular Terraform with remote state in S3 + DynamoDB locking — one <code>terraform apply</code> rebuilds the entire stack in a new region.</li>
+            </ul>
+
+            <h2 class="orange">Tech stack</h2>
+            <div class="chips">
+                <span class="chip aws">EC2</span><span class="chip aws">ALB</span><span class="chip aws">Auto Scaling</span><span class="chip aws">RDS</span><span class="chip aws">ElastiCache</span><span class="chip aws">VPC</span><span class="chip aws">CloudFront</span><span class="chip aws">Route 53</span><span class="chip aws">Secrets Manager</span><span class="chip">Terraform</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Detail: EKS Automation & Upgrades -->
+    <div id="eks-window" class="window" style="width: 680px; height: 580px; top: 70px; left: 250px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('eks-window')"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
+            </div>
+            <div class="window-title">EKS Automation &amp; Upgrades</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">EKS Cluster Automation &amp; Upgrades</h1>
+            <p class="muted"><em>Reproducible clusters · GitOps add-ons · zero-downtime upgrades</em></p>
+
+            <h2 class="orange">Automation flow</h2>
+            <div class="flow">
+                <span class="node">Terraform plan/apply</span><span class="arrow">→</span>
+                <span class="node">EKS control plane + managed node groups</span><span class="arrow">→</span>
+                <span class="node">FluxCD bootstrap</span><span class="arrow">→</span>
+                <span class="node">Add-ons via Helm releases</span><span class="arrow">→</span>
+                <span class="node">Workloads live</span>
+            </div>
+
+            <h2 class="orange">Key highlights</h2>
+            <ul class="detail-list">
+                <li><strong>Clusters as code:</strong> EKS control plane + managed node groups across AZs (mixed on-demand + spot for stateless workloads) provisioned with Terraform — a production-grade cluster in ~15 minutes.</li>
+                <li><strong>Just-in-time compute:</strong> Karpenter provisions and right-sizes nodes on demand with bin-packing and consolidation, cutting idle compute cost versus static node groups.</li>
+                <li><strong>Least-privilege workloads:</strong> IRSA (IAM Roles for Service Accounts) — pods assume only the AWS permissions they need, no node-wide credentials.</li>
+                <li><strong>GitOps add-ons:</strong> FluxCD reconciles everything — aws-load-balancer-controller, external-dns, cert-manager, metrics-server, monitoring stack — as versioned Helm releases in Git. Cluster config is reviewable and drift is auto-corrected.</li>
+                <li><strong>Zero-downtime upgrades:</strong> pre-flight checks (deprecated API scans, add-on compatibility) → control plane upgrade → blue/green node-group rotation: new nodes join on the target version, old nodes are cordoned and drained respecting PodDisruptionBudgets with surge capacity, so workloads keep serving throughout.</li>
+                <li><strong>Built-in observability:</strong> Fluent Bit ships logs to CloudWatch, Container Insights for metrics, Prometheus scraping app workloads.</li>
+                <li><strong>Hardening:</strong> secrets encrypted with KMS, pod security standards, private endpoint access, security groups for pods.</li>
+            </ul>
+
+            <h2 class="orange">Tech stack</h2>
+            <div class="chips">
+                <span class="chip aws">EKS</span><span class="chip aws">IRSA</span><span class="chip aws">KMS</span><span class="chip aws">CloudWatch</span><span class="chip">Terraform</span><span class="chip">Karpenter</span><span class="chip">FluxCD</span><span class="chip">Helm</span><span class="chip">Fluent Bit</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Detail: K8s Cluster Automation -->
+    <div id="k8s-window" class="window" style="width: 640px; height: 500px; top: 100px; left: 260px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('k8s-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">K8s Cluster Automation</div>
         </div>
         <div class="window-content">
             <h1 class="section-title">K8s Cluster Automation</h1>
-            <p><em>Infrastructure as Code</em></p>
+            <p class="muted"><em>From zero to a highly-available cluster, with one command</em></p>
             <h2>Overview</h2>
-            <p>Automated provisioning of multi-node Kubernetes clusters from scratch — from VM bring-up to cluster bootstrap.</p>
-            <h2>Tech Stack</h2>
-            <p>Kubernetes · Terraform · Ansible · Helm</p>
+            <p>Multi-node HA Kubernetes built from scratch — Terraform provisions the VMs and network, Ansible roles bootstrap the cluster with kubeadm. No manual steps in the critical path.</p>
+            <h2>Key highlights</h2>
+            <ul class="detail-list">
+                <li><strong>HA control plane:</strong> stacked etcd quorum across 3 controller nodes with a load-balanced API server endpoint — survives a node failure with no downtime.</li>
+                <li><strong>Idempotent playbooks:</strong> Ansible roles for kubeadm init/join, CNI, and post-install setup — re-runnable and version-controlled.</li>
+                <li><strong>Node upgrades without downtime:</strong> node-by-node cordon + drain + <code>kubeadm upgrade</code> playbooks, so workloads reschedule gracefully.</li>
+                <li><strong>Calico CNI</strong> with network policies for pod-to-pod segmentation; metrics-server and dashboards deployed via Helm.</li>
+                <li><strong>Bootstrap tokens</strong> for secure worker join automation.</li>
+            </ul>
+            <h2>Tech stack</h2>
+            <div class="chips">
+                <span class="chip">Kubeadm</span><span class="chip">Ansible</span><span class="chip">Terraform</span><span class="chip">Helm</span><span class="chip">Calico</span><span class="chip">etcd</span>
+            </div>
         </div>
     </div>
 
-    <div id="cicd-window" class="window" style="width: 600px; height: 420px; top: 110px; left: 280px;">
+    <!-- Project Detail: CI/CD -->
+    <div id="cicd-window" class="window" style="width: 640px; height: 520px; top: 110px; left: 280px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('cicd-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">CI/CD Pipeline</div>
         </div>
         <div class="window-content">
             <h1 class="section-title">CI/CD Pipeline</h1>
-            <p><em>Zero-Downtime Deployments</em></p>
-            <h2>Overview</h2>
-            <p>End-to-end pipeline that builds, tests and ships containers to production with GitOps and progressive delivery.</p>
-            <h2>Tech Stack</h2>
-            <p>GitHub Actions · ArgoCD · Docker · Kubernetes</p>
+            <p class="muted"><em>Zero-downtime deployments with GitOps and progressive delivery</em></p>
+            <h2>Pipeline</h2>
+            <div class="flow">
+                <span class="node">git push</span><span class="arrow">→</span>
+                <span class="node">lint + test</span><span class="arrow">→</span>
+                <span class="node">docker build</span><span class="arrow">→</span>
+                <span class="node">Trivy scan</span><span class="arrow">→</span>
+                <span class="node">push to ECR</span><span class="arrow">→</span>
+                <span class="node">bump manifest repo</span><span class="arrow">→</span>
+                <span class="node">GitOps sync → canary rollout</span>
+            </div>
+            <h2>Key highlights</h2>
+            <ul class="detail-list">
+                <li><strong>Immutable, scanned images:</strong> every build is tested and scanned (Trivy) — CRITICAL CVEs fail the pipeline; the same digest is promoted through all environments.</li>
+                <li><strong>GitOps promotion:</strong> CI only bumps the image tag in the manifest repo; ArgoCD/Flux reconciles clusters — Git is the single source of truth and drift auto-reverts.</li>
+                <li><strong>Zero downtime:</strong> rolling updates with readiness/liveness probes, plus canary analysis shifting traffic 10 → 50 → 100%.</li>
+                <li><strong>Auto-rollback:</strong> error-rate or latency regression during canary analysis rolls the release back automatically.</li>
+            </ul>
+            <h2>Tech stack</h2>
+            <div class="chips">
+                <span class="chip">GitHub Actions</span><span class="chip">ArgoCD</span><span class="chip">FluxCD</span><span class="chip">Docker</span><span class="chip aws">ECR</span><span class="chip">Trivy</span><span class="chip">Kubernetes</span>
+            </div>
         </div>
     </div>
 
-    <div id="monitoring-window" class="window" style="width: 600px; height: 420px; top: 120px; left: 300px;">
+    <!-- Project Detail: Monitoring -->
+    <div id="monitoring-window" class="window" style="width: 640px; height: 500px; top: 120px; left: 300px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('monitoring-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">Monitoring Dashboard</div>
         </div>
         <div class="window-content">
             <h1 class="section-title">Monitoring Dashboard</h1>
-            <p><em>Full-Stack Observability</em></p>
-            <h2>Overview</h2>
-            <p>Centralised metrics, logs and alerts for cloud-native workloads with rich dashboards and SLO tracking.</p>
-            <h2>Tech Stack</h2>
-            <p>Prometheus · Grafana · Loki · Alertmanager</p>
+            <p class="muted"><em>Full-stack observability — metrics, logs and SLOs in one place</em></p>
+            <h2>Key highlights</h2>
+            <ul class="detail-list">
+                <li><strong>kube-prometheus-stack:</strong> node/Kubernetes/app exporters with recording rules and pre-built dashboards for capacity and performance.</li>
+                <li><strong>SLO-driven alerting:</strong> Alertmanager routes by severity to Slack/PagerDuty — alerts on error budgets and burn rates, not raw CPU noise.</li>
+                <li><strong>Centralised logs:</strong> Loki + Fluent Bit with log-label routing; logs and metrics correlated in the same Grafana dashboards.</li>
+                <li><strong>External checks:</strong> blackbox exporter probes public endpoints for latency and availability from outside the cluster.</li>
+                <li><strong>Per-team dashboards:</strong> role-based Grafana folders so each team sees its own services' golden signals.</li>
+            </ul>
+            <h2>Tech stack</h2>
+            <div class="chips">
+                <span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Loki</span><span class="chip">Alertmanager</span><span class="chip">Fluent Bit</span><span class="chip">Blackbox exporter</span>
+            </div>
+            <div class="btn-row">
+                <button class="btn" onclick="openWindow('dash')">📈 View Live Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Dashboard Window (simulated) -->
+    <div id="dash-window" class="window" style="width: 780px; height: 560px; top: 70px; left: 220px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('dash-window')"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
+            </div>
+            <div class="window-title">Production Overview — Grafana (simulated)</div>
+        </div>
+        <div class="window-content">
+            <div class="dash">
+                <div class="dash-top">
+                    <span class="pill ok">● All systems operational</span>
+                    <span class="pill sim">simulated data</span>
+                    <span class="dash-clock" id="dash-clock">--:--:-- UTC</span>
+                </div>
+                <div class="dash-stats">
+                    <div class="stat"><span class="stat-label">CPU</span><span class="stat-val ok" id="ds-cpu">--</span><span class="stat-sub">across 6 nodes</span></div>
+                    <div class="stat"><span class="stat-label">Memory</span><span class="stat-val ok" id="ds-mem">--</span><span class="stat-sub">cluster avg</span></div>
+                    <div class="stat"><span class="stat-label">Pods</span><span class="stat-val ok" id="ds-pods">--</span><span class="stat-sub">running / desired</span></div>
+                    <div class="stat"><span class="stat-label">Req/s</span><span class="stat-val ok" id="ds-req">--</span><span class="stat-sub">ingress</span></div>
+                    <div class="stat"><span class="stat-label">Error rate</span><span class="stat-val ok" id="ds-err">--</span><span class="stat-sub">5xx</span></div>
+                </div>
+                <div class="dash-chart">
+                    <div class="dash-chart-title">
+                        <span>Traffic — last 60s</span>
+                        <span class="legend"><i class="dot g"></i>requests/s&nbsp;&nbsp;<i class="dot o"></i>errors/s</span>
+                    </div>
+                    <canvas id="dash-canvas"></canvas>
+                </div>
+                <div class="dash-chart">
+                    <div class="dash-chart-title"><span>Live events</span><span class="legend">auto-refresh 5s</span></div>
+                    <ul class="dash-log" id="dash-log"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terminal Window -->
+    <div id="terminal-window" class="window" style="width: 640px; height: 420px; top: 110px; left: 300px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('terminal-window')"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
+            </div>
+            <div class="window-title">harikumar — bash — 80×24</div>
+        </div>
+        <div class="window-content">
+            <div class="term-body" id="term-body"></div>
+            <input id="term-input" class="term-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="terminal input">
         </div>
     </div>
 
     <!-- Contact Window -->
-    <div id="contact-window" class="window" style="width: 520px; height: 380px; top: 140px; left: 360px;">
+    <div id="contact-window" class="window" style="width: 520px; height: 400px; top: 140px; left: 360px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
             <div class="window-controls">
                 <button class="control-btn close" onclick="closeWindow('contact-window')"></button>
-                <button class="control-btn minimize"></button>
-                <button class="control-btn maximize"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
             </div>
             <div class="window-title">Get in Touch</div>
         </div>
         <div class="window-content">
             <h1 class="section-title">Let's Connect</h1>
-            <p>🐙 github.com/Harry10799</p>
-            <p style="margin-top:14px;">Have an idea or want to collaborate? Let's connect and build something awesome!</p>
+            <p>Have an idea, a role, or an infrastructure problem worth solving? My inbox is always open.</p>
+            <div class="btn-row" style="margin-top:18px;">
+                <a class="btn" href="https://github.com/Harry10799" target="_blank" rel="noopener">🐙 github.com/Harry10799</a>
+            </div>
+            <p class="muted" style="margin-top:18px;">Open to DevOps / SRE / Platform Engineering roles and collaborations.</p>
         </div>
     </div>
 
@@ -711,17 +1153,48 @@
             w.classList.add('active');
             topZ++;
             w.style.zIndex = topZ;
+            if (id === 'terminal') startTerminal();
+            if (id === 'dash') startDash();
         }
 
         function closeWindow(id) {
-            document.getElementById(id).classList.remove('active');
+            const w = document.getElementById(id);
+            if (!w) return;
+            w.classList.remove('active', 'maximized');
+            if (id === 'dash-window') stopDash();
         }
+
+        function toggleMaximize(btn) {
+            const w = btn.closest('.window');
+            if (!w) return;
+            w.classList.toggle('maximized');
+            topZ++;
+            w.style.zIndex = topZ;
+        }
+
+        function minimizeWindow(btn) {
+            const w = btn.closest('.window');
+            if (!w) return;
+            w.classList.add('minimizing');
+            topZ++;
+            w.style.zIndex = topZ;
+            setTimeout(() => {
+                w.classList.remove('minimizing', 'active', 'maximized');
+                if (w.id === 'dash-window') stopDash();
+            }, 280);
+        }
+
+        // Double-click any window title bar to maximize / restore
+        document.querySelectorAll('.window-header').forEach(h => {
+            h.addEventListener('dblclick', () => toggleMaximize(h));
+        });
 
         // Drag
         let dragElement = null;
         let offsetX, offsetY;
 
         function dragStart(e, el) {
+            if (el.classList.contains('maximized')) return;
             dragElement = el;
             offsetX = e.clientX - el.offsetLeft;
             offsetY = e.clientY - el.offsetTop;
@@ -742,6 +1215,423 @@
             dragElement = null;
             document.removeEventListener('mousemove', dragMove);
             document.removeEventListener('mouseup', dragEnd);
+        }
+
+        /* ---- Hero typing animation ---- */
+        (function heroTyper() {
+            const el = document.getElementById('typed');
+            const roles = [
+                'DevOps Engineer',
+                'AWS · EKS · Terraform',
+                'Kubernetes & GitOps',
+                'CI/CD & Observability'
+            ];
+            let ri = 0, ci = 0, deleting = false;
+            function tick() {
+                const word = roles[ri];
+                ci += deleting ? -1 : 1;
+                el.textContent = word.slice(0, ci);
+                let delay = deleting ? 38 : 72;
+                if (!deleting && ci === word.length) { delay = 1700; deleting = true; }
+                else if (deleting && ci === 0) { deleting = false; ri = (ri + 1) % roles.length; delay = 380; }
+                setTimeout(tick, delay);
+            }
+            tick();
+        })();
+
+        /* ---- Terminal (interactive) ---- */
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        let termRun = 0;
+        let liveLine = null, liveTyped = null;
+        let termHistory = [], termHistIdx = 0;
+
+        const termBody = () => document.getElementById('term-body');
+        const termInputEl = () => document.getElementById('term-input');
+
+        const TERM_PROJECTS = {
+            three_tier: {
+                title: 'highly scalable 3-tier architecture on aws',
+                body: [
+                    '  route53 → cloudfront → alb → ec2 auto scaling → rds multi-az + elasticache',
+                    '  • multi-az vpc: public / private / isolated subnets, nat gateways',
+                    '  • stateless app tier: sessions in redis, scales on cpu + alb request count',
+                    '  • rds multi-az with auto failover · secrets manager · ssm (no bastion)',
+                    '  • 100% terraform — s3 remote state + dynamodb locking, one apply to rebuild',
+                    '  stack: ec2 · alb · asg · rds · elasticache · cloudfront · terraform'
+                ]
+            },
+            eks: {
+                title: 'eks cluster automation & zero-downtime upgrades',
+                body: [
+                    '  • terraform: control plane + managed node groups (multi-az, on-demand + spot)',
+                    '  • karpenter: just-in-time nodes with bin-packing & consolidation',
+                    '  • irsa: least-privilege aws access per pod — no node-wide credentials',
+                    '  • fluxcd gitops: add-ons as versioned helm releases, drift auto-reverted',
+                    '  • zero-downtime upgrades: blue/green node rotation with pdb-aware drain',
+                    '  stack: eks · terraform · karpenter · fluxcd · helm · fluent bit'
+                ]
+            },
+            k8s: {
+                title: 'k8s cluster automation (kubeadm + ansible)',
+                body: [
+                    '  • terraform provisions vms/network, ansible bootstraps kubeadm',
+                    '  • ha control plane: 3-node stacked etcd quorum, load-balanced api server',
+                    '  • node-by-node cordon + drain upgrade playbooks — no downtime',
+                    '  • calico cni with network policies · helm for add-ons',
+                    '  stack: kubeadm · ansible · terraform · helm · calico · etcd'
+                ]
+            },
+            cicd: {
+                title: 'ci/cd pipeline with gitops & progressive delivery',
+                body: [
+                    '  push → test → build → trivy scan → ecr → bump manifests → gitops sync → canary',
+                    '  • immutable, scanned images — critical cves fail the build',
+                    '  • git is the source of truth: argocd/flux reconciles, drift auto-reverts',
+                    '  • canary 10 → 50 → 100% with auto-rollback on error-rate spikes',
+                    '  stack: github actions · argocd/flux · docker · ecr · trivy'
+                ]
+            },
+            monitoring: {
+                title: 'prometheus + grafana observability stack',
+                body: [
+                    '  • kube-prometheus-stack: node / k8s / app exporters, recording rules',
+                    '  • slo-driven alerting routed to slack / pagerduty by severity',
+                    '  • loki + fluent bit logs correlated with metrics in grafana',
+                    '  • blackbox exporter probes external endpoints',
+                    '  stack: prometheus · grafana · loki · alertmanager · fluent bit',
+                    "  tip: hit '📊' in the dock for the live simulated dashboard"
+                ]
+            }
+        };
+        const TERM_ALIASES = {
+            '3tier': 'three_tier', threetier: 'three_tier', 'three-tier': 'three_tier', three_tier: 'three_tier',
+            eks: 'eks', k8s: 'k8s', kubernetes: 'k8s',
+            cicd: 'cicd', 'ci-cd': 'cicd', pipeline: 'cicd',
+            monitoring: 'monitoring', dashboard: 'monitoring', grafana: 'monitoring'
+        };
+
+        function termPrint(text, cls, before) {
+            const d = document.createElement('div');
+            if (cls) d.className = cls;
+            d.textContent = text;
+            const b = termBody();
+            if (before && before.parentNode === b) b.insertBefore(d, before);
+            else b.appendChild(d);
+        }
+        function termScroll() { const b = termBody(); if (b) b.scrollTop = b.scrollHeight; }
+        function termPrintProjects() {
+            Object.keys(TERM_PROJECTS).forEach(k => termPrint(k.padEnd(13) + TERM_PROJECTS[k].title, 'o'));
+        }
+        function termNewLive() {
+            const b = termBody();
+            liveLine = document.createElement('div');
+            liveLine.innerHTML = '<span class="p">~ $</span> <span class="term-typed c"></span><span class="term-cursor"></span>';
+            b.appendChild(liveLine);
+            liveTyped = liveLine.querySelector('.term-typed');
+            termScroll();
+        }
+
+        function runCommand(raw) {
+            const line = raw.trim();
+            if (!line) return;
+            const parts = line.split(/\s+/);
+            const name = parts[0].toLowerCase();
+            const out = (t, c) => termPrint(t, c || 'o');
+            switch (name) {
+                case 'help':
+                    ['available commands:',
+                     '  whoami            about me',
+                     '  projects          list all projects',
+                     '  cat <project>     detailed overview (e.g. cat eks)',
+                     '  skills            my toolbox',
+                     '  contact           reach me',
+                     '  clear             clear the terminal'].forEach(t => out(t));
+                    break;
+                case 'whoami':
+                    out('harikumar · devops engineer - 2 @ csg international');
+                    out('aws · eks · terraform · gitops · kubernetes · observability');
+                    break;
+                case 'projects':
+                    termPrintProjects();
+                    break;
+                case 'cat':
+                case 'open': {
+                    const key = TERM_ALIASES[(parts[1] || '').toLowerCase()];
+                    if (!key) { out(`cat: ${parts[1] || 'missing operand'}: no such project — try 'projects'`); break; }
+                    const p = TERM_PROJECTS[key];
+                    out(key + ' — ' + p.title);
+                    p.body.forEach(t => out(t));
+                    break;
+                }
+                case 'skills':
+                    ['cloud       aws: eks · ec2 · vpc · rds · s3 · iam · cloudwatch · ecr',
+                     'containers  docker · kubernetes · helm',
+                     'cicd        jenkins · github actions · azure pipelines · fluxcd · argocd · rundeck',
+                     'iac         terraform · ansible · chef',
+                     'scripting   python · bash · yaml',
+                     'observ.     prometheus · grafana · loki · elk · fluent bit'].forEach(t => out(t));
+                    break;
+                case 'contact':
+                    out('github   → github.com/Harry10799');
+                    out('status   → open to devops / sre / platform engineering roles');
+                    break;
+                case 'clear':
+                    termBody().innerHTML = '';
+                    liveLine = null; liveTyped = null;
+                    break;
+                case 'sudo':
+                    out('nice try 😄 — no sudo on this portfolio');
+                    break;
+                default:
+                    out(`command not found: ${name} — try 'help'`);
+            }
+            termScroll();
+        }
+
+        function termComplete() {
+            const inp = termInputEl();
+            const parts = inp.value.split(/\s+/);
+            const cur = (parts[parts.length - 1] || '').toLowerCase();
+            if (!cur) return;
+            const pool = parts.length === 1
+                ? ['help', 'whoami', 'projects', 'cat', 'skills', 'contact', 'clear']
+                : Object.keys(TERM_PROJECTS);
+            const hits = pool.filter(p => p.startsWith(cur));
+            if (hits.length === 1) {
+                parts[parts.length - 1] = hits[0];
+                inp.value = parts.join(' ');
+                if (liveTyped) liveTyped.textContent = inp.value;
+            } else if (hits.length > 1) {
+                termPrint(hits.join('   '), 'o', liveLine);
+            }
+        }
+
+        (function setupTermInput() {
+            const inp = termInputEl();
+            if (!inp) return;
+            inp.addEventListener('input', () => {
+                if (liveTyped) liveTyped.textContent = inp.value;
+                termScroll();
+            });
+            inp.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = inp.value;
+                    if (liveLine) {
+                        liveLine.innerHTML = '<span class="p">~ $</span> ';
+                        const s = document.createElement('span');
+                        s.className = 'c';
+                        s.textContent = val;
+                        liveLine.appendChild(s);
+                        liveLine = null; liveTyped = null;
+                    }
+                    if (val.trim()) termHistory.push(val);
+                    termHistIdx = termHistory.length;
+                    runCommand(val);
+                    termNewLive();
+                    inp.value = '';
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (termHistIdx > 0) {
+                        termHistIdx--;
+                        inp.value = termHistory[termHistIdx] || '';
+                        if (liveTyped) liveTyped.textContent = inp.value;
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (termHistIdx < termHistory.length) {
+                        termHistIdx++;
+                        inp.value = termHistory[termHistIdx] || '';
+                        if (liveTyped) liveTyped.textContent = inp.value;
+                    }
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    termComplete();
+                }
+            });
+            const b = termBody();
+            if (b) b.addEventListener('mousedown', (e) => { e.preventDefault(); inp.focus({ preventScroll: true }); });
+        })();
+
+        async function startTerminal() {
+            const runId = ++termRun;
+            const b = termBody();
+            if (!b) return;
+            b.innerHTML = '';
+            liveLine = null; liveTyped = null;
+            const inp = termInputEl();
+            if (inp) inp.value = '';
+            termHistory = []; termHistIdx = 0;
+
+            const typeCmd = async (s) => {
+                const l = document.createElement('div');
+                l.innerHTML = '<span class="p">~ $</span> ';
+                const span = document.createElement('span');
+                span.className = 'c';
+                l.appendChild(span);
+                b.appendChild(l);
+                for (const ch of s) {
+                    if (runId !== termRun) return false;
+                    span.textContent += ch;
+                    await sleep(24);
+                    b.scrollTop = b.scrollHeight;
+                }
+                await sleep(220);
+                return true;
+            };
+
+            if (!await typeCmd('whoami')) return;
+            termPrint('harikumar · devops engineer - 2 @ csg international', 'o');
+            if (!await typeCmd('projects')) return;
+            termPrintProjects();
+            termPrint("type 'help' for commands · try 'cat eks' · tab completes", 'hint');
+            termNewLive();
+            if (inp && window.innerWidth > 700) inp.focus({ preventScroll: true });
+        }
+
+        /* ---- Live monitoring dashboard (simulated) ---- */
+        let dashState = null;
+        const DASH_EVENTS = [
+            ['ok',   "rollout 'web-frontend' finished · 12/12 pods ready"],
+            ['ok',   "canary 'payments-svc' promoted to 100%"],
+            ['info', 'karpenter: provisioned spot node ip-10-0-4-71 (m5.large)'],
+            ['ok',   'backup completed · rds-prod-mysql (2.1 GB)'],
+            ['warn', 'cpu 81% on node ip-10-0-3-12 — hpa scaling out'],
+            ['info', "hpa: scaled 'api-gateway' 8 → 10 replicas"],
+            ['ok',   "cron 'cleanup-jobs' completed in 42s"],
+            ['info', 'flux: reconciled 14 helm releases · 0 drift'],
+            ['ok',   'cert renewed · *.harikumarpeddakotla.me'],
+            ['warn', 'p99 latency 412ms on /checkout — rollback armed']
+        ];
+        const clamp = (min, max, v) => Math.min(max, Math.max(min, v));
+        function dashNextReq(S) {
+            const base = 820 + 90 * Math.sin(S.t / 9) + 50 * Math.sin(S.t / 23);
+            return Math.max(120, base + (Math.random() * 120 - 60));
+        }
+        function dashNextErr() { return Math.max(0, Math.round(Math.random() * 6)); }
+        function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+
+        function drawDash() {
+            const canvas = document.getElementById('dash-canvas');
+            if (!canvas || !dashState) return;
+            const w = canvas.clientWidth || 600;
+            const h = canvas.clientHeight || 150;
+            const dpr = window.devicePixelRatio || 1;
+            if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+                canvas.width = Math.round(w * dpr);
+                canvas.height = Math.round(h * dpr);
+            }
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            const S = dashState;
+            const max = Math.max.apply(null, S.data) * 1.15;
+            const pad = { l: 36, r: 8, t: 8, b: 14 };
+            const iw = w - pad.l - pad.r;
+            const ih = h - pad.t - pad.b;
+            const x = i => pad.l + (i / (S.data.length - 1)) * iw;
+            const y = v => pad.t + ih - (v / max) * ih;
+            ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+            ctx.lineWidth = 1;
+            ctx.fillStyle = '#66666d';
+            ctx.font = '9px "JetBrains Mono", monospace';
+            for (let g = 0; g <= 3; g++) {
+                const gy = pad.t + (ih / 3) * g;
+                ctx.beginPath();
+                ctx.moveTo(pad.l, gy);
+                ctx.lineTo(w - pad.r, gy);
+                ctx.stroke();
+                ctx.fillText(String(Math.round(max * (1 - g / 3))), 3, gy + 3);
+            }
+            const grad = ctx.createLinearGradient(0, pad.t, 0, h - pad.b);
+            grad.addColorStop(0, 'rgba(41,204,106,0.25)');
+            grad.addColorStop(1, 'rgba(41,204,106,0)');
+            ctx.beginPath();
+            ctx.moveTo(x(0), y(S.data[0]));
+            S.data.forEach((v, i) => ctx.lineTo(x(i), y(v)));
+            ctx.lineTo(x(S.data.length - 1), h - pad.b);
+            ctx.lineTo(x(0), h - pad.b);
+            ctx.closePath();
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.beginPath();
+            S.data.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
+            ctx.strokeStyle = '#29cc6a';
+            ctx.lineWidth = 2;
+            ctx.shadowColor = 'rgba(41,204,106,0.5)';
+            ctx.shadowBlur = 6;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            S.errs.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
+            ctx.strokeStyle = '#ff9900';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        function dashTick() {
+            const S = dashState;
+            if (!S) return;
+            S.t++;
+            S.data.push(dashNextReq(S)); S.data.shift();
+            S.errs.push(dashNextErr()); S.errs.shift();
+            S.cpu = clamp(22, 89, S.cpu + (Math.random() * 8 - 4));
+            S.mem = clamp(48, 82, S.mem + (Math.random() * 4 - 2));
+            if (Math.random() < 0.15) S.pods = clamp(34, 58, S.pods + Math.round(Math.random() * 6 - 3));
+            const running = S.pods - (Math.random() < 0.12 ? 1 : 0);
+            const req = S.data[S.data.length - 1];
+            const err = S.errs[S.errs.length - 1];
+            setText('ds-cpu', S.cpu.toFixed(0) + '%');
+            setText('ds-mem', S.mem.toFixed(0) + '%');
+            setText('ds-pods', running + ' / ' + S.pods);
+            setText('ds-req', req.toFixed(0));
+            setText('ds-err', ((err / req) * 100).toFixed(2) + '%');
+            const cpuEl = document.getElementById('ds-cpu');
+            if (cpuEl) cpuEl.className = 'stat-val ' + (S.cpu > 78 ? 'warn' : 'ok');
+            setText('dash-clock', new Date().toISOString().slice(11, 19) + ' UTC');
+            drawDash();
+        }
+
+        function dashLog(force) {
+            const S = dashState;
+            if (!S) return;
+            if (!force && Math.random() < 0.25) return;
+            const ev = DASH_EVENTS[Math.floor(Math.random() * DASH_EVENTS.length)];
+            const ul = document.getElementById('dash-log');
+            if (!ul) return;
+            const li = document.createElement('li');
+            li.className = ev[0];
+            const t = document.createElement('span');
+            t.className = 't';
+            t.textContent = new Date().toISOString().slice(11, 19);
+            const m = document.createElement('span');
+            m.className = 'm';
+            m.textContent = ev[1];
+            li.appendChild(t);
+            li.appendChild(m);
+            ul.insertBefore(li, ul.firstChild);
+            while (ul.children.length > 6) ul.removeChild(ul.lastChild);
+        }
+
+        function startDash() {
+            stopDash();
+            const canvas = document.getElementById('dash-canvas');
+            if (!canvas) return;
+            const S = { t: 0, data: [], errs: [], cpu: 38, mem: 61, pods: 46, timers: [] };
+            for (let i = 0; i < 60; i++) { S.t++; S.data.push(dashNextReq(S)); S.errs.push(dashNextErr()); }
+            dashState = S;
+            const ul = document.getElementById('dash-log');
+            if (ul) ul.innerHTML = '';
+            dashLog(true); dashLog(true); dashLog(true);
+            dashTick();
+            S.timers.push(setInterval(dashTick, 1000));
+            S.timers.push(setInterval(() => dashLog(false), 5000));
+        }
+
+        function stopDash() {
+            if (!dashState) return;
+            dashState.timers.forEach(clearInterval);
+            dashState = null;
         }
 
         /* ---- Desktop folder drag + click/dblclick/tap to open ---- */

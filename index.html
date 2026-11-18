@@ -679,6 +679,10 @@
             <div class="folder-icon"></div>
             <span>K8s Cluster Automation</span>
         </div>
+        <div class="desktop-icon pos-6" data-target="osrm">
+            <div class="folder-icon"></div>
+            <span>OSRM Dataset Pipeline</span>
+        </div>
     </div>
 
     <!-- Dock -->
@@ -781,6 +785,14 @@
                 <p>Prometheus + Grafana + Loki stack — metrics, logs and alerting with SLO tracking for cloud-native workloads.</p>
                 <div class="chips">
                     <span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Loki</span><span class="chip">Alertmanager</span>
+                </div>
+                <small style="color:#0a84ff;">Click to view details →</small>
+            </div>
+            <div class="project-card clickable" onclick="openWindow('osrm')">
+                <h3>OSRM Map Dataset Ingestion Pipeline</h3>
+                <p>Event-driven AWS ingestion: an OSM PBF upload to S3 triggers a Python 3.12 Lambda, which logs the upload and writes a processing marker to a separate prefix.</p>
+                <div class="chips">
+                    <span class="chip aws">AWS S3</span><span class="chip aws">AWS Lambda</span><span class="chip">Python 3.12</span><span class="chip">OSRM</span>
                 </div>
                 <small style="color:#0a84ff;">Click to view details →</small>
             </div>
@@ -1052,6 +1064,48 @@
         </div>
     </div>
 
+    <!-- OSRM Dataset Pipeline Window -->
+    <div id="osrm-window" class="window" style="width: 820px; height: 620px; top: 55px; left: 180px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('osrm-window')"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
+            </div>
+            <div class="window-title">OSRM Map Dataset Ingestion Pipeline — AWS</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">OSRM Map Dataset Ingestion Pipeline</h1>
+            <p class="muted">An event-driven foundation for ingesting OpenStreetMap PBF datasets into an OSRM routing workflow.</p>
+            <h2 class="orange">Current demo architecture</h2>
+            <div class="flow">
+                <span class="node">Upload .osm.pbf</span><span class="arrow">→</span><span class="node aws">Amazon S3 / raw/</span><span class="arrow">→</span><span class="node aws">S3 ObjectCreated</span><span class="arrow">→</span><span class="node aws">Lambda · Python 3.12</span><span class="arrow">→</span><span class="node aws">S3 / processed/</span>
+            </div>
+            <p class="muted">The current proof of concept validates the event path. Lambda logs the source bucket, object key and size, then writes a .done.txt marker under processed/.</p>
+            <h2>Implementation steps</h2>
+            <ol class="detail-list">
+                <li>Create an S3 bucket with separate raw/ and processed/ prefixes.</li>
+                <li>Configure an ObjectCreated notification for prefix raw/ and suffix .osm.pbf.</li>
+                <li>Deploy a Python 3.12 Lambda and grant CloudWatch Logs permissions plus s3:PutObject on the processed/ output prefix.</li>
+                <li>Upload raw/test.osm.pbf and verify the Lambda invocation and processed/test.osm.pbf.done.txt marker.</li>
+                <li>Grant s3:GetObject on raw/ only if the handler needs to read the uploaded dataset bytes.</li>
+            </ol>
+            <h2 class="orange">Why the S3 filter matters</h2>
+            <p>The trigger listens only to objects under raw/ ending in .osm.pbf. Lambda writes its marker into processed/, so that output does not match the notification filter and cannot recursively invoke the same function.</p>
+            <h2>Next phase — real OSRM processing (planned)</h2>
+            <div class="flow">
+                <span class="node aws">S3 raw PBF</span><span class="arrow">→</span><span class="node aws">Event / Lambda</span><span class="arrow">→</span><span class="node aws">ECS Fargate task</span><span class="arrow">→</span><span class="node">osrm-extract</span><span class="arrow">→</span><span class="node">partition / customize</span><span class="arrow">→</span><span class="node aws">S3 routing artifacts</span><span class="arrow">→</span><span class="node">OSRM routing service</span>
+            </div>
+            <ul class="detail-list">
+                <li>Run CPU- and memory-intensive PBF processing in ECS Fargate rather than inside Lambda.</li>
+                <li>Execute OSRM extract, partition and customize stages, then publish the routing artifacts.</li>
+                <li>Deploy an OSRM routing server that loads the prepared artifacts and serves route requests.</li>
+            </ul>
+            <p class="muted">Status: S3 → Lambda event handling and marker-file output are the current demo. Actual PBF parsing, OSRM preprocessing, artifact publication and routing-server deployment are planned follow-up work.</p>
+            <div class="chips"><span class="chip aws">Amazon S3</span><span class="chip aws">AWS Lambda</span><span class="chip aws">ECS Fargate (planned)</span><span class="chip">Python 3.12</span><span class="chip">OpenStreetMap</span><span class="chip">OSRM</span></div>
+        </div>
+    </div>
+
     <!-- Live Dashboard Window (simulated) -->
     <div id="dash-window" class="window" style="width: 780px; height: 560px; top: 70px; left: 220px;">
         <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
@@ -1291,6 +1345,19 @@
                     '  stack: github actions · argocd/flux · docker · ecr · trivy'
                 ]
             },
+            osrm: {
+                title: 'osrm map dataset ingestion pipeline (aws s3 + lambda)',
+                body: [
+                    '  current demo: upload raw/test.osm.pbf → S3 ObjectCreated → Lambda (Python 3.12)',
+                    '  • Lambda logs source bucket, object key and object size',
+                    '  • writes processed/test.osm.pbf.done.txt as a completion marker',
+                    '  • notification filter: prefix raw/ + suffix .osm.pbf',
+                    '  • processed/ output is excluded, preventing recursive invocations',
+                    '  • IAM: CloudWatch Logs + s3:PutObject on processed/; s3:GetObject only if reading input',
+                    '  planned: ECS Fargate → osrm-extract → partition/customize → routing artifacts → OSRM server',
+                    '  status: event-ingestion demo complete; real PBF processing is planned'
+                ]
+            },
             monitoring: {
                 title: 'prometheus + grafana observability stack',
                 body: [
@@ -1307,7 +1374,8 @@
             '3tier': 'three_tier', threetier: 'three_tier', 'three-tier': 'three_tier', three_tier: 'three_tier',
             eks: 'eks', k8s: 'k8s', kubernetes: 'k8s',
             cicd: 'cicd', 'ci-cd': 'cicd', pipeline: 'cicd',
-            monitoring: 'monitoring', dashboard: 'monitoring', grafana: 'monitoring'
+            monitoring: 'monitoring', dashboard: 'monitoring', grafana: 'monitoring',
+            osrm: 'osrm', dataset: 'osrm', map: 'osrm'
         };
 
         function termPrint(text, cls, before) {

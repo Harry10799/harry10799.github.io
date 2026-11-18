@@ -1077,32 +1077,33 @@
         <div class="window-content">
             <h1 class="section-title">OSRM Map Dataset Ingestion Pipeline</h1>
             <p class="muted">An event-driven foundation for ingesting OpenStreetMap PBF datasets into an OSRM routing workflow.</p>
-            <h2 class="orange">Current demo architecture</h2>
+            <h2 class="orange">Architecture — implemented demo</h2>
             <div class="flow">
-                <span class="node">Upload .osm.pbf</span><span class="arrow">→</span><span class="node aws">Amazon S3 / raw/</span><span class="arrow">→</span><span class="node aws">S3 ObjectCreated</span><span class="arrow">→</span><span class="node aws">Lambda · Python 3.12</span><span class="arrow">→</span><span class="node aws">S3 / processed/</span>
+                <span class="node">OSM .osm.pbf file</span><span class="arrow">→</span><span class="node aws">S3 raw/</span><span class="arrow">→</span><span class="node aws">ObjectCreated event</span><span class="arrow">→</span><span class="node aws">Lambda · Python 3.12</span><span class="arrow">→</span><span class="node aws">S3 processed/ marker</span>
             </div>
-            <p class="muted">The current proof of concept validates the event path. Lambda logs the source bucket, object key and size, then writes a .done.txt marker under processed/.</p>
-            <h2>Implementation steps</h2>
+            <p class="muted">When a PBF file is uploaded to the raw/ prefix, S3 invokes the Lambda function. The function logs the new dataset details and creates a completion marker in processed/.</p>
+
+            <h2>Step-by-step implementation</h2>
             <ol class="detail-list">
-                <li>Create an S3 bucket with separate raw/ and processed/ prefixes.</li>
-                <li>Configure an ObjectCreated notification for prefix raw/ and suffix .osm.pbf.</li>
-                <li>Deploy a Python 3.12 Lambda and grant CloudWatch Logs permissions plus s3:PutObject on the processed/ output prefix.</li>
-                <li>Upload raw/test.osm.pbf and verify the Lambda invocation and processed/test.osm.pbf.done.txt marker.</li>
-                <li>Grant s3:GetObject on raw/ only if the handler needs to read the uploaded dataset bytes.</li>
+                <li><strong>Create the S3 bucket.</strong> In the AWS Console, open S3 and create a globally unique bucket, for example <code>osrm-test-&lt;yourname&gt;-123</code>. Inside it, create the <code>raw/</code> and <code>processed/</code> prefixes.</li>
+                <li><strong>Create the Lambda function.</strong> Open AWS Lambda, choose Create function, select Author from scratch, name it <code>osrm-dataset-trigger</code>, and choose the Python 3.12 runtime.</li>
+                <li><strong>Configure the Lambda execution role.</strong> Attach CloudWatch Logs permissions. Add an inline S3 policy allowing <code>s3:GetObject</code> and <code>s3:PutObject</code> on <code>arn:aws:s3:::osrm-test-&lt;yourname&gt;-123/*</code>. Replace the example bucket name with the bucket you created.</li>
+                <li><strong>Add the S3 trigger.</strong> In the Lambda function configuration, add an S3 trigger and select your bucket. Set event type to all object create events, prefix to <code>raw/</code>, and suffix to <code>.osm.pbf</code>.</li>
+                <li><strong>Upload a test dataset.</strong> Upload an OpenStreetMap PBF file to the raw/ prefix. For example, using the AWS CLI: <code>aws s3 cp test.osm.pbf s3://osrm-test-&lt;yourname&gt;-123/raw/test.osm.pbf</code>.</li>
+                <li><strong>Verify the Lambda execution.</strong> Open the function's CloudWatch log group and confirm the <code>New dataset...</code> log entry, including the uploaded object's details.</li>
+                <li><strong>Verify the output marker.</strong> Return to the S3 bucket and confirm that <code>processed/test.osm.pbf.done.txt</code> was created by the Lambda function.</li>
             </ol>
-            <h2 class="orange">Why the S3 filter matters</h2>
-            <p>The trigger listens only to objects under raw/ ending in .osm.pbf. Lambda writes its marker into processed/, so that output does not match the notification filter and cannot recursively invoke the same function.</p>
-            <h2>Next phase — real OSRM processing (planned)</h2>
-            <div class="flow">
-                <span class="node aws">S3 raw PBF</span><span class="arrow">→</span><span class="node aws">Event / Lambda</span><span class="arrow">→</span><span class="node aws">ECS Fargate task</span><span class="arrow">→</span><span class="node">osrm-extract</span><span class="arrow">→</span><span class="node">partition / customize</span><span class="arrow">→</span><span class="node aws">S3 routing artifacts</span><span class="arrow">→</span><span class="node">OSRM routing service</span>
-            </div>
+
+            <h2 class="orange">S3 event-filter configuration</h2>
+            <p>The notification uses prefix <code>raw/</code> and suffix <code>.osm.pbf</code>. The Lambda writes its marker under <code>processed/</code>, which does not match the trigger filter. This prevents the marker upload from invoking the same Lambda again.</p>
+            <h2>What this demo verifies</h2>
             <ul class="detail-list">
-                <li>Run CPU- and memory-intensive PBF processing in ECS Fargate rather than inside Lambda.</li>
-                <li>Execute OSRM extract, partition and customize stages, then publish the routing artifacts.</li>
-                <li>Deploy an OSRM routing server that loads the prepared artifacts and serves route requests.</li>
+                <li>Event-driven integration between Amazon S3 and AWS Lambda.</li>
+                <li>Python 3.12 Lambda invocation on a matching PBF upload.</li>
+                <li>CloudWatch logging of the incoming dataset details.</li>
+                <li>Writing a completion marker to a separate S3 prefix.</li>
             </ul>
-            <p class="muted">Status: S3 → Lambda event handling and marker-file output are the current demo. Actual PBF parsing, OSRM preprocessing, artifact publication and routing-server deployment are planned follow-up work.</p>
-            <div class="chips"><span class="chip aws">Amazon S3</span><span class="chip aws">AWS Lambda</span><span class="chip aws">ECS Fargate (planned)</span><span class="chip">Python 3.12</span><span class="chip">OpenStreetMap</span><span class="chip">OSRM</span></div>
+            <div class="chips"><span class="chip aws">Amazon S3</span><span class="chip aws">AWS Lambda</span><span class="chip">Python 3.12</span><span class="chip">CloudWatch Logs</span><span class="chip">OpenStreetMap PBF</span></div>
         </div>
     </div>
 
@@ -1348,14 +1349,16 @@
             osrm: {
                 title: 'osrm map dataset ingestion pipeline (aws s3 + lambda)',
                 body: [
-                    '  current demo: upload raw/test.osm.pbf → S3 ObjectCreated → Lambda (Python 3.12)',
-                    '  • Lambda logs source bucket, object key and object size',
-                    '  • writes processed/test.osm.pbf.done.txt as a completion marker',
-                    '  • notification filter: prefix raw/ + suffix .osm.pbf',
-                    '  • processed/ output is excluded, preventing recursive invocations',
-                    '  • IAM: CloudWatch Logs + s3:PutObject on processed/; s3:GetObject only if reading input',
-                    '  planned: ECS Fargate → osrm-extract → partition/customize → routing artifacts → OSRM server',
-                    '  status: event-ingestion demo complete; real PBF processing is planned'
+                    '  1. create S3 bucket: osrm-test-<yourname>-123',
+                    '  2. create raw/ and processed/ prefixes in the bucket',
+                    '  3. create Lambda: osrm-dataset-trigger (Python 3.12)',
+                    '  4. execution role: CloudWatch Logs + s3:GetObject and s3:PutObject on bucket/*',
+                    '  5. add S3 trigger: all object creates, prefix raw/, suffix .osm.pbf',
+                    '  6. upload: aws s3 cp test.osm.pbf s3://<bucket>/raw/test.osm.pbf',
+                    '  7. verify CloudWatch log: New dataset... with uploaded object details',
+                    '  8. verify S3 output: processed/test.osm.pbf.done.txt',
+                    '  • output prefix is outside the trigger filter, preventing recursive invokes',
+                    '  stack: Amazon S3 · AWS Lambda · Python 3.12 · CloudWatch Logs'
                 ]
             },
             monitoring: {

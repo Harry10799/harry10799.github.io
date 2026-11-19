@@ -756,6 +756,14 @@
                 </div>
                 <small style="color:#0a84ff;">Click to view details →</small>
             </div>
+            <div class="project-card clickable" onclick="openWindow('alb-nat')">
+                <h3>ALB + NAT Gateway Web Architecture</h3>
+                <p>Two-AZ VPC design with an internet-facing Application Load Balancer, private EC2 web servers, and controlled outbound internet access through a NAT Gateway.</p>
+                <div class="chips">
+                    <span class="chip aws">AWS VPC</span><span class="chip aws">ALB</span><span class="chip aws">NAT Gateway</span><span class="chip">EC2</span><span class="chip">Security Groups</span><span class="chip">Multi-AZ</span>
+                </div>
+                <small style="color:#0a84ff;">Click to view architecture &amp; setup steps →</small>
+            </div>
             <div class="project-card clickable" onclick="openWindow('eks')">
                 <h3>EKS Cluster Automation &amp; Zero-Downtime Upgrades</h3>
                 <p>Terraform-provisioned EKS platform with Karpenter, IRSA and GitOps-managed add-ons — plus a blue/green node rotation strategy for upgrades with zero customer impact.</p>
@@ -921,6 +929,59 @@
             <h2 class="orange">Tech stack</h2>
             <div class="chips">
                 <span class="chip aws">EC2</span><span class="chip aws">ALB</span><span class="chip aws">Auto Scaling</span><span class="chip aws">RDS</span><span class="chip aws">ElastiCache</span><span class="chip aws">VPC</span><span class="chip aws">CloudFront</span><span class="chip aws">Route 53</span><span class="chip aws">Secrets Manager</span><span class="chip">Terraform</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Detail: ALB + NAT Gateway Architecture -->
+    <div id="alb-nat-window" class="window" style="width: 900px; height: 720px; top: 55px; left: 180px;">
+        <div class="window-header" onmousedown="dragStart(event, this.parentElement)">
+            <div class="window-controls">
+                <button class="control-btn close" onclick="closeWindow('alb-nat-window')"></button>
+                <button class="control-btn minimize" onclick="minimizeWindow(this)"></button>
+                <button class="control-btn maximize" onclick="toggleMaximize(this)"></button>
+            </div>
+            <div class="window-title">AWS VPC · ALB + NAT Gateway</div>
+        </div>
+        <div class="window-content">
+            <h1 class="section-title">ALB + NAT Gateway Web Architecture</h1>
+            <p class="muted"><em>Two Availability Zones · public load balancing · private EC2 web tier</em></p>
+
+            <h2 class="orange">Architecture diagram</h2>
+            <img src="assets/aws-alb-nat-architecture.svg" alt="AWS VPC architecture showing an internet-facing ALB in two public subnets, a NAT Gateway, and EC2 web servers in private subnets across two Availability Zones." style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#08111f;margin:12px 0 20px;">
+
+            <h2 class="orange">Step-by-step implementation</h2>
+            <ol class="detail-list">
+                <li><strong>Create a VPC:</strong> choose an IPv4 CIDR range such as <code>10.0.0.0/16</code> and enable DNS resolution and DNS hostnames.</li>
+                <li><strong>Create four subnets across two AZs:</strong> Public Subnet 1 and Public Subnet 2 for the ALB/NAT; Private Subnet 1 and Private Subnet 2 for the EC2 web servers. Use non-overlapping CIDR ranges.</li>
+                <li><strong>Attach an Internet Gateway:</strong> create and attach an IGW to the VPC. Add a route <code>0.0.0.0/0 → IGW</code> to the public route table and associate both public subnets.</li>
+                <li><strong>Create the NAT Gateway:</strong> allocate an Elastic IP and create the NAT Gateway in Public Subnet 1. In the private route table, add <code>0.0.0.0/0 → NAT Gateway</code> and associate the private subnets. This provides outbound access; it does not allow unsolicited inbound internet connections.</li>
+                <li><strong>Create the Application Load Balancer:</strong> choose internet-facing, select both public subnets, create a target group for the EC2 web servers, configure health checks, and add an HTTP port 80 listener forwarding to that target group.</li>
+                <li><strong>Launch EC2 web servers:</strong> launch one instance in each private subnet, disable public IP assignment, install/configure the web server, and register both instances in the ALB target group.</li>
+                <li><strong>Configure security groups:</strong> ALB-SG allows inbound TCP 80 from <code>0.0.0.0/0</code>. Web-SG allows inbound TCP 80 only from ALB-SG. Do not open SSH/RDP to the internet; use Systems Manager Session Manager where configured.</li>
+                <li><strong>Validate the setup:</strong> wait for both targets to become healthy, open the ALB DNS name in a browser, verify requests reach the EC2 instances, and test outbound connectivity from the private instances through NAT.</li>
+            </ol>
+
+            <h2 class="orange">Traffic flow</h2>
+            <div class="flow">
+                <span class="node">Internet</span><span class="arrow">→</span>
+                <span class="node">IGW</span><span class="arrow">→</span>
+                <span class="node">ALB · Public Subnets</span><span class="arrow">→</span>
+                <span class="node">EC2 · Private Subnets</span>
+            </div>
+            <div class="flow">
+                <span class="node aws">Private EC2 outbound traffic</span><span class="arrow">→</span>
+                <span class="node aws">NAT Gateway · Public Subnet 1</span><span class="arrow">→</span>
+                <span class="node">IGW</span><span class="arrow">→</span>
+                <span class="node">Internet</span>
+            </div>
+
+            <h2 class="orange">Important production consideration</h2>
+            <p>The diagram intentionally shows one NAT Gateway, matching the supplied design. A single NAT Gateway creates an Availability Zone dependency and can incur cross-AZ data charges. For stronger AZ resilience, deploy one NAT Gateway in each public subnet/AZ and route each private subnet through its same-AZ NAT Gateway.</p>
+
+            <h2 class="orange">Technology stack</h2>
+            <div class="chips">
+                <span class="chip aws">Amazon VPC</span><span class="chip aws">Internet Gateway</span><span class="chip aws">Application Load Balancer</span><span class="chip aws">NAT Gateway</span><span class="chip aws">EC2</span><span class="chip">Route Tables</span><span class="chip">Security Groups</span>
             </div>
         </div>
     </div>
@@ -1304,6 +1365,20 @@
         const termInputEl = () => document.getElementById('term-input');
 
         const TERM_PROJECTS = {
+            alb_nat: {
+                title: 'alb + nat gateway web architecture',
+                body: [
+                    '  internet → igw → internet-facing alb (public subnets, 2 AZs)',
+                    '  alb target group → ec2 web servers in private subnets',
+                    '  nat gateway in public subnet 1 provides private-instance outbound access',
+                    '  alb-sg: inbound tcp/80 from 0.0.0.0/0',
+                    '  web-sg: inbound tcp/80 from alb-sg only; EC2 has no public IP',
+                    '  steps: VPC → 4 subnets → IGW/routes → NAT/routes → ALB/target group',
+                    '         → private EC2 → security groups → health checks + ALB DNS test',
+                    '  production note: use one NAT gateway per AZ for resilient egress',
+                    '  stack: VPC · ALB · NAT Gateway · EC2 · route tables · security groups'
+                ]
+            },
             three_tier: {
                 title: 'highly scalable 3-tier architecture on aws',
                 body: [
@@ -1375,6 +1450,7 @@
         };
         const TERM_ALIASES = {
             '3tier': 'three_tier', threetier: 'three_tier', 'three-tier': 'three_tier', three_tier: 'three_tier',
+            'alb': 'alb_nat', 'nat': 'alb_nat', 'alb-nat': 'alb_nat', alb_nat: 'alb_nat',
             eks: 'eks', k8s: 'k8s', kubernetes: 'k8s',
             cicd: 'cicd', 'ci-cd': 'cicd', pipeline: 'cicd',
             monitoring: 'monitoring', dashboard: 'monitoring', grafana: 'monitoring',

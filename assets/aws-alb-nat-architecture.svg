@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120">
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#101b31"/><stop offset="1" stop-color="#08111f"/></linearGradient>
+ <linearGradient id="pub" x2="0" y2="1"><stop stop-color="#163d36"/><stop offset="1" stop-color="#102a2a"/></linearGradient>
+ <linearGradient id="priv" x2="0" y2="1"><stop stop-color="#142e4c"/><stop offset="1" stop-color="#102239"/></linearGradient>
+ <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0 L0 6 L9 3z" fill="#dce9ff"/></marker>
+ <marker id="bluearr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0 L0 6 L9 3z" fill="#60a5fa"/></marker>
+ <style>
+ .h{font:700 36px Arial,sans-serif;fill:#f8fafc}.sub{font:20px Arial,sans-serif;fill:#a9bbd4}
+ .zone{font:700 25px Arial,sans-serif;fill:#a7f3d0}.privh{font:700 25px Arial,sans-serif;fill:#93c5fd}
+ .label{font:700 23px Arial,sans-serif;fill:#f8fafc}.small{font:18px Arial,sans-serif;fill:#cbd5e1}
+ .tiny{font:16px Arial,sans-serif;fill:#aebed2}.arrow{stroke:#dce9ff;stroke-width:4;fill:none;marker-end:url(#arr)}
+ .out{stroke:#60a5fa;stroke-width:4;stroke-dasharray:12 9;fill:none;marker-end:url(#bluearr)}
+ </style>
+</defs>
+<rect width="1600" height="1120" rx="28" fill="url(#bg)"/>
+<text x="70" y="75" class="h">AWS VPC — ALB + NAT Gateway Architecture</text>
+<text x="70" y="112" class="sub">Internet-facing load balancer · private EC2 web tier · two Availability Zones</text>
+<rect x="55" y="150" width="1490" height="780" rx="24" fill="#0b1628" stroke="#64748b" stroke-width="2" stroke-dasharray="12 8"/>
+<text x="85" y="190" class="zone">AWS REGION / VPC</text>
+<!-- Internet and IGW -->
+<rect x="665" y="205" width="270" height="75" rx="18" fill="#173c67" stroke="#60a5fa" stroke-width="2"/>
+<text x="800" y="251" text-anchor="middle" class="label">INTERNET</text>
+<path d="M800 280 V315" class="arrow"/>
+<rect x="650" y="320" width="300" height="78" rx="16" fill="#30245e" stroke="#a78bfa" stroke-width="2"/>
+<text x="800" y="351" text-anchor="middle" class="label">Internet Gateway</text><text x="800" y="378" text-anchor="middle" class="small">(IGW)</text>
+<!-- subnet boxes -->
+<rect x="95" y="445" width="680" height="220" rx="20" fill="url(#pub)" stroke="#22c55e" stroke-width="2.5"/>
+<rect x="825" y="445" width="680" height="220" rx="20" fill="url(#pub)" stroke="#22c55e" stroke-width="2.5"/>
+<text x="125" y="485" class="zone">PUBLIC SUBNET 1 · AZ-A</text><text x="855" y="485" class="zone">PUBLIC SUBNET 2 · AZ-B</text>
+<!-- IGW routing -->
+<path d="M800 398 V420 H435 V445" class="arrow"/><path d="M800 420 H1165 V445" class="arrow"/>
+<!-- ALB spanning public subnets -->
+<rect x="450" y="510" width="700" height="105" rx="18" fill="#31245e" stroke="#a78bfa" stroke-width="3"/>
+<text x="800" y="552" text-anchor="middle" class="label">APPLICATION LOAD BALANCER (ALB)</text>
+<text x="800" y="585" text-anchor="middle" class="small">Internet-facing · listener HTTP :80 · deployed across both public subnets</text>
+<text x="130" y="635" class="tiny">NAT Gateway + Elastic IP</text>
+<rect x="150" y="545" width="230" height="75" rx="14" fill="#4a2b16" stroke="#fb923c" stroke-width="2"/>
+<text x="265" y="575" text-anchor="middle" class="label">NAT Gateway</text><text x="265" y="600" text-anchor="middle" class="tiny">Public Subnet 1</text>
+<!-- private subnet -->
+<rect x="95" y="730" width="680" height="160" rx="20" fill="url(#priv)" stroke="#38bdf8" stroke-width="2.5"/>
+<rect x="825" y="730" width="680" height="160" rx="20" fill="url(#priv)" stroke="#38bdf8" stroke-width="2.5"/>
+<text x="125" y="770" class="privh">PRIVATE SUBNET 1 · AZ-A</text><text x="855" y="770" class="privh">PRIVATE SUBNET 2 · AZ-B</text>
+<rect x="265" y="790" width="340" height="75" rx="14" fill="#183d5c" stroke="#60a5fa" stroke-width="2"/>
+<rect x="995" y="790" width="340" height="75" rx="14" fill="#183d5c" stroke="#60a5fa" stroke-width="2"/>
+<text x="435" y="822" text-anchor="middle" class="label">EC2 Web Server</text><text x="435" y="848" text-anchor="middle" class="small">No public IP · Web-SG :80 from ALB-SG</text>
+<text x="1165" y="822" text-anchor="middle" class="label">EC2 Web Server</text><text x="1165" y="848" text-anchor="middle" class="small">No public IP · Web-SG :80 from ALB-SG</text>
+<!-- ALB to targets -->
+<path d="M610 615 V690 H435 V785" class="arrow"/><path d="M990 615 V690 H1165 V785" class="arrow"/>
+<text x="800" y="710" text-anchor="middle" class="tiny">ALB forwards requests to healthy targets over private IP</text>
+<!-- NAT outbound route -->
+<path d="M265 620 V700 H190 V785" class="out"/>
+<text x="200" y="718" class="tiny" fill="#93c5fd">Outbound only</text>
+<!-- cross AZ communication -->
+<path d="M605 827 H995" stroke="#64748b" stroke-width="2.5" stroke-dasharray="8 8" fill="none"/>
+<text x="800" y="815" text-anchor="middle" class="tiny">Private IP traffic</text>
+<!-- security panel -->
+<rect x="55" y="955" width="1490" height="125" rx="20" fill="#121f34" stroke="#334155" stroke-width="2"/>
+<text x="90" y="995" class="label">SECURITY GROUPS</text>
+<text x="90" y="1032" class="small">ALB-SG: inbound TCP 80 from 0.0.0.0/0</text>
+<text x="590" y="1032" class="small">Web-SG: inbound TCP 80 from ALB-SG only</text>
+<text x="1130" y="1032" class="small">EC2: private IP only</text>
+<text x="90" y="1060" class="tiny">Note: This design shows one NAT Gateway in Public Subnet 1. For AZ-resilient production egress, deploy one NAT Gateway per AZ and route each private subnet to its same-AZ NAT.</text>
+</svg>

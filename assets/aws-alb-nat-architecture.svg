@@ -49,7 +49,7 @@
 <path d="M610 615 V690 H435 V785" class="arrow"/><path d="M990 615 V690 H1165 V785" class="arrow"/>
 <text x="800" y="710" text-anchor="middle" class="tiny">ALB forwards requests to healthy targets over private IP</text>
 <!-- NAT outbound route -->
-<path d="M265 620 V700 H190 V785" class="out"/>
+<path d="M190 785 V700 H265 V620" class="out"/>
 <text x="200" y="718" class="tiny" fill="#93c5fd">Outbound only</text>
 <!-- cross AZ communication -->
 <path d="M605 827 H995" stroke="#64748b" stroke-width="2.5" stroke-dasharray="8 8" fill="none"/>
